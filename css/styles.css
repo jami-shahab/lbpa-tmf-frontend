@@ -1,0 +1,253 @@
+/* Custom Styles for LBPA TMF Frontend */
+
+html {
+  font-size: 16px;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Utilities */
+.max-h-600 {
+  max-height: 600px;
+}
+
+.card-shadow {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Loading spinner */
+.spinner {
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  border-top-color: rgb(80, 136, 174);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Offline banner */
+.offline-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: rgb(220, 38, 38);
+  color: white;
+  padding: 12px;
+  text-align: center;
+  z-index: 9999;
+  font-weight: 500;
+}
+
+/* Map container */
+.map-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(228, 227, 227);
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* Ensure Leaflet map and all its layers stay behind modals */
+#map-container,
+#map-container .leaflet-container,
+#map-container .leaflet-pane,
+#map-container .leaflet-map-pane,
+#map-container .leaflet-tile-pane,
+#map-container .leaflet-overlay-pane,
+#map-container .leaflet-shadow-pane,
+#map-container .leaflet-marker-pane,
+#map-container .leaflet-tooltip-pane,
+#map-container .leaflet-popup-pane {
+  z-index: 1 !important;
+}
+
+/* Map legend - ensure it stays above map tiles but below modals */
+.map-legend {
+  z-index: 10 !important;
+  position: relative;
+}
+
+.map-marker {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  transition: transform 0.2s;
+}
+
+.map-marker:hover {
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+/* Table responsiveness */
+.table-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Filter panel */
+.filter-panel {
+  background-color: rgb(228, 227, 227);
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+/* Success message */
+.success-message {
+  background-color: rgba(83, 153, 73, 0.1);
+  color: rgb(83, 153, 73);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* Error message */
+.error-message {
+  background-color: rgba(220, 38, 38, 0.1);
+  color: rgb(220, 38, 38);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* Loading overlay */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  z-index: 9998;
+}
+
+/* Status badges */
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.status-published {
+  background-color: rgba(83, 153, 73, 0.1);
+  color: rgb(83, 153, 73);
+}
+
+.status-draft {
+  background-color: rgba(234, 179, 8, 0.1);
+  color: rgb(180, 83, 9);
+}
+
+.status-processing {
+  background-color: rgba(80, 136, 174, 0.1);
+  color: rgb(80, 136, 174);
+}
+
+/* Impact badges */
+.impact-critical {
+  background-color: rgba(220, 38, 38, 0.2);
+}
+
+.impact-high {
+  background-color: rgba(234, 179, 8, 0.2);
+}
+
+.impact-medium {
+  background-color: rgba(80, 136, 174, 0.1);
+}
+
+.impact-low {
+  background-color: rgba(83, 153, 73, 0.1);
+}
+
+/* Type badges */
+.type-closure {
+  background-color: rgba(220, 38, 38, 0.1);
+}
+
+.type-construction {
+  background-color: rgba(234, 179, 8, 0.1);
+}
+
+.type-transit {
+  background-color: rgba(80, 136, 174, 0.1);
+}
+
+.type-advisory {
+  background-color: rgba(83, 153, 73, 0.1);
+}
+
+/* Drag and drop */
+.drag-over {
+  background-color: rgba(80, 136, 174, 0.1);
+  border-color: rgb(80, 136, 174);
+}
+
+/* Responsive fixes */
+@media (max-width: 640px) {
+  .table-container table {
+    min-width: 900px;
+  }
+}
+
+/* Animation for new elements */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Ensure modals and overlays are always on top */
+#subscribe-modal,
+#confirm-modal,
+#detail-overlay {
+  z-index: 9999 !important;
+}
