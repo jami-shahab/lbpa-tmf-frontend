@@ -41,8 +41,9 @@ export class SubscribeForm {
 
       <form id="subscribe-form" class="space-y-6">
         <div>
-          <label class="block mb-2 text-gray-700">Email Address *</label>
+          <label for="email-input" class="block mb-2 text-gray-700">Email Address *</label>
           <input
+            id="email-input"
             required
             type="email"
             name="email"
@@ -53,8 +54,8 @@ export class SubscribeForm {
         </div>
 
         <div>
-          <label class="block mb-2 text-gray-700">Select Region</label>
-          <select name="region" class="w-full px-4 py-2 border rounded-lg text-gray-700">
+          <label for="region-select" class="block mb-2 text-gray-700">Select Region</label>
+          <select id="region-select" name="region" class="w-full px-4 py-2 border rounded-lg text-gray-700">
             <option value="">All Regions</option>
             ${regionOptions.filter(r => r !== 'All Regions').map(r => `
               <option value="${r}">${r}</option>
@@ -63,8 +64,8 @@ export class SubscribeForm {
           <span class="text-sm mt-1 block text-gray-600">Optional: Select a specific region to monitor</span>
         </div>
 
-        <div>
-          <label class="block mb-2 text-gray-700">Alert Types *</label>
+        <fieldset>
+          <legend class="block mb-2 text-gray-700">Alert Types *</legend>
           <div class="space-y-2">
             ${CONFIG.INCIDENT_TYPES.map(type => `
               <label class="flex items-center gap-2 cursor-pointer">
@@ -74,10 +75,10 @@ export class SubscribeForm {
             `).join('')}
           </div>
           <span class="text-sm mt-1 block text-gray-600">Choose which types of updates you want to receive</span>
-        </div>
+        </fieldset>
 
-        <div>
-          <label class="block mb-2 text-gray-700">Impact Levels *</label>
+        <fieldset>
+          <legend class="block mb-2 text-gray-700">Impact Levels *</legend>
           <div class="space-y-2">
             <label class="flex items-center gap-2 cursor-pointer">
               <input type="checkbox" name="impacts" value="low" class="w-4 h-4" />
@@ -93,10 +94,10 @@ export class SubscribeForm {
             </label>
           </div>
           <span class="text-sm mt-1 block text-gray-600">Filter by incident severity</span>
-        </div>
+        </fieldset>
 
-        <div>
-          <label class="block mb-2 text-gray-700">Frequency *</label>
+        <fieldset>
+          <legend class="block mb-2 text-gray-700">Frequency *</legend>
           <div class="space-y-2">
             <label class="flex items-center gap-2 cursor-pointer">
               <input type="radio" name="frequency" value="daily" class="w-4 h-4" checked />
@@ -111,7 +112,7 @@ export class SubscribeForm {
               <span class="text-gray-700">Monthly Report</span>
             </label>
           </div>
-        </div>
+        </fieldset>
 
         <div>
           <label class="flex items-start gap-2 cursor-pointer">
