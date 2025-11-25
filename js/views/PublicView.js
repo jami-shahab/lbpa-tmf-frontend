@@ -12,7 +12,9 @@ import { SubscribeForm } from '../components/SubscribeForm.js';
 export class PublicView {
   constructor() {
     this.incidents = [];
-    this.filters = {};
+    this.filters = {
+      district: ['Leaside-Thorncliffe']
+    };
     this.subscribeModal = new Modal('#subscribe-modal');
     this.subscribeForm = new SubscribeForm();
     this.detailPanel = null;
@@ -79,17 +81,53 @@ export class PublicView {
   }
 
   updateRegionDropdown() {
-    const regionSelect = $('#filter-region');
-    if (!regionSelect) return;
+    const menu = $('#region-menu');
+    const triggerText = $('#region-trigger-text');
+    if (!menu || !triggerText) return;
 
-    const currentValue = regionSelect.value;
-    regionSelect.innerHTML = `
-      <option value="">All Regions</option>
-      ${this.regions.map(region => `
-        <option value="${region}">${region}</option>
-      `).join('')}
-    `;
-    regionSelect.value = currentValue;
+    // Ensure Leaside-Thorncliffe is in the list if not already
+    const allRegions = new Set(['Leaside-Thorncliffe', ...this.regions]);
+
+    // Current selected values (default to Leaside-Thorncliffe if empty)
+    const currentSelected = this.filters.district || ['Leaside-Thorncliffe'];
+
+    // Update Trigger Text
+    if (currentSelected.length === 0) {
+      triggerText.textContent = 'Select Regions';
+    } else if (currentSelected.length === allRegions.size) {
+      triggerText.textContent = 'All Regions';
+    } else if (currentSelected.length <= 2) {
+      triggerText.textContent = currentSelected.join(', ');
+    } else {
+      triggerText.textContent = `${currentSelected.length} Regions Selected`;
+    }
+
+    // Render Checkboxes
+    menu.innerHTML = Array.from(allRegions).map(region => `
+      <label class="dropdown-item">
+        <input type="checkbox" 
+          value="${region}" 
+          class="region-checkbox rounded text-blue-600 focus:ring-blue-500"
+          ${currentSelected.includes(region) ? 'checked' : ''}
+        >
+        <span>${region}</span>
+      </label>
+    `).join('');
+
+    // Bind events immediately after rendering
+    $$('.region-checkbox').forEach(cb => {
+      cb.addEventListener('change', () => {
+        const selected = [];
+        $$('.region-checkbox:checked').forEach(box => selected.push(box.value));
+        this.filters.district = selected;
+
+        // Update trigger text immediately
+        this.updateRegionDropdown();
+
+        // Reload incidents
+        this.loadIncidents();
+      });
+    });
   }
 
   getHTML() {
@@ -303,11 +341,20 @@ export class PublicView {
           </select>
         </div>
 
-        <div class="flex-1 min-w-[180px]">
-          <label class="block text-sm mb-1" style="color:${grayText}">Region</label>
-          <select id="filter-region" class="w-full px-3 py-2 rounded border bg-white" style="color:${grayText}">
-            <option value="">All Regions</option>
-          </select>
+        <div class="flex-1 min-w-[250px]">
+          <label class="block text-sm mb-1" style="color:${grayText}">Regions</label>
+          <div class="custom-dropdown" id="region-dropdown">
+            <div class="dropdown-trigger" id="region-trigger">
+              <span id="region-trigger-text">Select Regions</span>
+              <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+            <div class="dropdown-menu" id="region-menu">
+              <!-- Checkboxes injected here -->
+              <div class="p-2 text-sm text-gray-400">Loading...</div>
+            </div>
+          </div>
         </div>
 
         <div class="flex-1 min-w-[180px]">
@@ -365,7 +412,7 @@ export class PublicView {
     const { grayText } = CONFIG.COLORS;
 
     return `
-      <div class="map-legend absolute top-4 right-4 bg-white rounded-lg card-shadow p-3 max-w-[200px]">
+      <div class="map-legend bg-white rounded-lg card-shadow p-3 max-w-[200px]">
         <div class="text-sm mb-2 font-semibold" style="color:${grayText}">Legend</div>
         <div class="space-y-1 text-xs" style="color:${grayText}">
           <div class="flex items-center gap-2">
@@ -685,7 +732,7 @@ export class PublicView {
       const mobileMenu = $('#mobile-menu');
       const mobileBtn = $('#mobile-menu-btn');
       if (mobileMenu && !mobileMenu.classList.contains('hidden') &&
-          !mobileMenu.contains(e.target) && !mobileBtn?.contains(e.target)) {
+        !mobileMenu.contains(e.target) && !mobileBtn?.contains(e.target)) {
         mobileMenu.classList.add('hidden');
       }
     });
@@ -696,10 +743,29 @@ export class PublicView {
       this.loadIncidents();
     });
 
-    $('#filter-region')?.addEventListener('change', (e) => {
-      this.filters.district = e.target.value;
-      this.loadIncidents();
-    });
+    // Custom Dropdown Logic
+    const dropdown = $('#region-dropdown');
+    const trigger = $('#region-trigger');
+    const menu = $('#region-menu');
+
+    if (trigger && menu) {
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        menu.classList.toggle('show');
+      });
+
+      // Close when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!dropdown.contains(e.target)) {
+          menu.classList.remove('show');
+        }
+      });
+
+      // Prevent closing when clicking inside menu
+      menu.addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
+    }
 
     $('#filter-impact')?.addEventListener('change', (e) => {
       this.filters.impact = e.target.value;
@@ -707,10 +773,12 @@ export class PublicView {
     });
 
     $('#reset-filters')?.addEventListener('click', () => {
-      this.filters = {};
+      this.filters = {
+        district: ['Leaside-Thorncliffe']
+      };
       $('#filter-type').value = '';
-      $('#filter-region').value = '';
       $('#filter-impact').value = '';
+      this.updateRegionDropdown(); // Re-render checkboxes
       this.loadIncidents();
     });
 

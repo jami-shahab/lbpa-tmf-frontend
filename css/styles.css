@@ -96,8 +96,11 @@ body {
 
 /* Map legend - ensure it stays above map tiles but below modals */
 .map-legend {
-  z-index: 10 !important;
-  position: relative;
+  z-index: 1000 !important;
+  /* Higher than Leaflet controls (usually 1000) */
+  position: absolute !important;
+  top: 10px;
+  right: 10px;
 }
 
 .map-marker {
@@ -239,6 +242,7 @@ body {
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -254,4 +258,69 @@ body {
 #confirm-modal,
 #detail-overlay {
   z-index: 9999 !important;
+}
+
+/* Custom Multi-Select Dropdown */
+.custom-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.dropdown-trigger {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.25rem;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: rgb(89, 89, 89);
+  font-size: 0.875rem;
+  /* text-sm */
+}
+
+.dropdown-trigger:hover {
+  border-color: #d1d5db;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  max-height: 250px;
+  overflow-y: auto;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.25rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  z-index: 50;
+  margin-top: 0.25rem;
+  display: none;
+  /* Hidden by default */
+}
+
+.dropdown-menu.show {
+  display: block;
+}
+
+.dropdown-item {
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: rgb(89, 89, 89);
+}
+
+.dropdown-item:hover {
+  background-color: #f9fafb;
+}
+
+.dropdown-item input[type="checkbox"] {
+  cursor: pointer;
 }
