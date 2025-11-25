@@ -86,16 +86,19 @@ export class PublicView {
     if (!menu || !triggerText) return;
 
     // Ensure Leaside-Thorncliffe is in the list if not already
-    const allRegions = new Set(['Leaside-Thorncliffe', ...this.regions]);
+    const priorityRegion = 'Leaside-Thorncliffe';
+    const otherRegions = this.regions.filter(r => r !== priorityRegion).sort();
 
-    // Current selected values (default to Leaside-Thorncliffe if empty)
-    const currentSelected = this.filters.district || ['Leaside-Thorncliffe'];
+    // Current selected values (default to Leaside-Thorncliffe)
+    const currentSelected = this.filters.district || [priorityRegion];
 
     // Update Trigger Text
     if (currentSelected.length === 0) {
-      triggerText.textContent = 'Select Regions';
-    } else if (currentSelected.length === allRegions.size) {
       triggerText.textContent = 'All Regions';
+    } else if (currentSelected.length === this.regions.length + (this.regions.includes(priorityRegion) ? 0 : 1)) {
+      triggerText.textContent = 'All Regions';
+    } else if (currentSelected.length === 1 && currentSelected[0] === priorityRegion) {
+      triggerText.textContent = priorityRegion;
     } else if (currentSelected.length <= 2) {
       triggerText.textContent = currentSelected.join(', ');
     } else {
@@ -103,7 +106,32 @@ export class PublicView {
     }
 
     // Render Checkboxes
-    menu.innerHTML = Array.from(allRegions).map(region => `
+    const isAllSelected = currentSelected.length === 0;
+
+    let html = `
+      <label class="dropdown-item">
+        <input type="checkbox" 
+          value="ALL" 
+          class="region-checkbox-all rounded text-blue-600 focus:ring-blue-500"
+          ${isAllSelected ? 'checked' : ''}
+        >
+        <span class="font-semibold">All Regions</span>
+      </label>
+      <div class="border-b my-1"></div>
+      
+      <!-- Priority Region -->
+      <label class="dropdown-item bg-blue-50">
+        <input type="checkbox" 
+          value="${priorityRegion}" 
+          class="region-checkbox rounded text-blue-600 focus:ring-blue-500"
+          ${currentSelected.includes(priorityRegion) ? 'checked' : ''}
+        >
+        <span class="font-medium text-blue-800">${priorityRegion}</span>
+      </label>
+      <div class="border-b my-1"></div>
+    `;
+
+    html += otherRegions.map(region => `
       <label class="dropdown-item">
         <input type="checkbox" 
           value="${region}" 
@@ -114,17 +142,47 @@ export class PublicView {
       </label>
     `).join('');
 
-    // Bind events immediately after rendering
-    $$('.region-checkbox').forEach(cb => {
+    menu.innerHTML = html;
+
+    // Bind events
+    // 1. "All Regions" checkbox
+    const allCheckbox = menu.querySelector('.region-checkbox-all');
+    allCheckbox?.addEventListener('change', (e) => {
+      if (e.target.checked) {
+        this.filters.district = [];
+      } else {
+        // If unchecking All, default to Priority Region
+        this.filters.district = [priorityRegion];
+      }
+      this.updateRegionDropdown();
+      this.loadIncidents();
+    });
+
+    // 2. Individual checkboxes
+    menu.querySelectorAll('.region-checkbox').forEach(cb => {
       cb.addEventListener('change', () => {
-        const selected = [];
-        $$('.region-checkbox:checked').forEach(box => selected.push(box.value));
-        this.filters.district = selected;
+        let selected = this.filters.district || [];
+        const value = cb.value;
 
-        // Update trigger text immediately
+        if (cb.checked) {
+          // If we were in "All" mode (empty array), start fresh with this one
+          if (selected.length === 0) {
+            selected = [value];
+          } else {
+            selected.push(value);
+          }
+        } else {
+          selected = selected.filter(r => r !== value);
+        }
+
+        // If nothing selected, revert to All (empty array)
+        if (selected.length === 0) {
+          this.filters.district = [];
+        } else {
+          this.filters.district = selected;
+        }
+
         this.updateRegionDropdown();
-
-        // Reload incidents
         this.loadIncidents();
       });
     });
