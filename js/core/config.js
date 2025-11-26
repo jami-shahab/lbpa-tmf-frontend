@@ -36,7 +36,7 @@ export const CONFIG = {
     INCIDENTS: '/incidents',
     INCIDENT_BY_ID: (id) => `/incidents/${id}`,
     REGIONS: '/regions',
-    SUBSCRIBE: '/subscribe',
+    SUBSCRIBE: '/subscribe/',
     VERIFY_SUBSCRIPTION: (token) => `/subscribe/verify/${token}`,
     UNSUBSCRIBE: (token) => `/unsubscribe/${token}`,
 
