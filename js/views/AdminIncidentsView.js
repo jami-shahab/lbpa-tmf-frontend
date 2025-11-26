@@ -19,7 +19,9 @@ export class AdminIncidentsView {
   }
 
   formatDate(dateString) {
-    if (!dateString) return 'N/A';
+    // User request: Treat null/empty as TBD (failed inference)
+    if (!dateString) return 'TBD';
+
     // Check for sentinel date (1970-01-01)
     if (dateString.startsWith('1970-01-01')) return 'TBD';
 
