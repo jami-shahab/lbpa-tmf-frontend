@@ -104,9 +104,13 @@ export class ConfirmModal extends Modal {
     const okBtn = $('#confirm-ok');
 
     cancelBtn?.addEventListener('click', () => this.hide());
-    okBtn?.addEventListener('click', () => {
+    okBtn?.addEventListener('click', async () => {
       if (this.callback) {
-        this.callback();
+        try {
+          await this.callback();
+        } catch (e) {
+          console.error('Modal callback error:', e);
+        }
       }
       this.hide();
     });

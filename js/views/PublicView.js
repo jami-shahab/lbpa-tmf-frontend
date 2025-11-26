@@ -360,7 +360,7 @@ export class PublicView {
             ${this.getFiltersHTML()}
 
             <!-- Background Image Container -->
-            <div style="position:relative; padding:120px 0;">
+            <div style="position:relative; padding:40px 0;">
               <!-- Background Image with Fade Effects -->
               <div style="
                 position:absolute;
@@ -557,13 +557,14 @@ export class PublicView {
         <div class="flex-1 min-w-[250px]">
           <label class="block text-sm mb-1" style="color:${grayText}">Regions</label>
           <div class="custom-dropdown" id="region-dropdown">
-            <div class="dropdown-trigger" id="region-trigger">
+            <div class="dropdown-trigger" id="region-trigger" 
+                 tabindex="0" role="button" aria-haspopup="true" aria-expanded="false" aria-label="Select Regions">
               <span id="region-trigger-text">Select Regions</span>
               <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
               </svg>
             </div>
-            <div class="dropdown-menu" id="region-menu">
+            <div class="dropdown-menu" id="region-menu" role="menu">
               <!-- Checkboxes injected here -->
               <div class="p-2 text-sm text-gray-400">Loading...</div>
             </div>
@@ -588,6 +589,14 @@ export class PublicView {
         <div class="flex-1 min-w-[150px]">
           <label class="block text-sm mb-1" style="color:${grayText}">To</label>
           <input type="date" id="filter-date-to" class="w-full px-3 py-2 rounded border bg-white" style="color:${grayText}">
+        </div>
+
+        <div class="flex-1 min-w-[200px] relative">
+          <label class="block text-sm mb-1" style="color:${grayText}">Search</label>
+          <input type="text" id="public-search" placeholder="Search incidents..." 
+            class="pl-8 pr-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+            value="${this.filters.q || ''}" />
+          <span class="absolute left-2.5 top-[34px] text-gray-400">🔍</span>
         </div>
 
         <div class="flex items-end">
@@ -705,13 +714,14 @@ export class PublicView {
                 <div>
                   <label class="block text-sm font-medium mb-1">Regions</label>
                   <div class="custom-dropdown" id="footer-region-dropdown">
-                    <div class="dropdown-trigger text-sm" id="footer-region-trigger" style="color:${grayText}">
+                    <div class="dropdown-trigger text-sm" id="footer-region-trigger" style="color:${grayText}" 
+                         tabindex="0" role="button" aria-haspopup="true" aria-expanded="false" aria-label="Select Regions">
                       <span id="footer-region-trigger-text">Select Regions</span>
                       <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                       </svg>
                     </div>
-                    <div class="dropdown-menu" id="footer-region-menu">
+                    <div class="dropdown-menu" id="footer-region-menu" role="menu">
                       <!-- Checkboxes injected here -->
                       <div class="p-2 text-sm text-gray-400">Loading...</div>
                     </div>
@@ -722,13 +732,14 @@ export class PublicView {
                 <div>
                   <label class="block text-sm font-medium mb-1">Incident Types</label>
                   <div class="custom-dropdown" id="footer-type-dropdown">
-                    <div class="dropdown-trigger text-sm" id="footer-type-trigger" style="color:${grayText}">
+                    <div class="dropdown-trigger text-sm" id="footer-type-trigger" style="color:${grayText}"
+                         tabindex="0" role="button" aria-haspopup="true" aria-expanded="false" aria-label="Select Incident Types">
                       <span id="footer-type-trigger-text">All Types</span>
                       <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                       </svg>
                     </div>
-                    <div class="dropdown-menu" id="footer-type-menu">
+                    <div class="dropdown-menu" id="footer-type-menu" role="menu">
                       <!-- Types injected via JS -->
                     </div>
                   </div>
@@ -738,13 +749,14 @@ export class PublicView {
                 <div>
                   <label class="block text-sm font-medium mb-1">Impact Level</label>
                   <div class="custom-dropdown" id="footer-impact-dropdown">
-                    <div class="dropdown-trigger text-sm" id="footer-impact-trigger" style="color:${grayText}">
+                    <div class="dropdown-trigger text-sm" id="footer-impact-trigger" style="color:${grayText}"
+                         tabindex="0" role="button" aria-haspopup="true" aria-expanded="false" aria-label="Select Impact Level">
                       <span id="footer-impact-trigger-text">All Impact Levels</span>
                       <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                       </svg>
                     </div>
-                    <div class="dropdown-menu" id="footer-impact-menu">
+                    <div class="dropdown-menu" id="footer-impact-menu" role="menu">
                       <!-- Impacts injected via JS -->
                     </div>
                   </div>
@@ -787,6 +799,37 @@ export class PublicView {
       }
     });
 
+    // Keyboard accessibility for dropdowns
+    const setupDropdownAccess = (triggerId, dropdownId) => {
+      const trigger = $('#' + triggerId);
+      const dropdown = $('#' + dropdownId);
+
+      if (trigger && dropdown) {
+        trigger.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            dropdown.classList.toggle('active');
+            const isExpanded = dropdown.classList.contains('active');
+            trigger.setAttribute('aria-expanded', isExpanded);
+          }
+        });
+
+        // Close on Escape
+        dropdown.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') {
+            dropdown.classList.remove('active');
+            trigger.setAttribute('aria-expanded', 'false');
+            trigger.focus();
+          }
+        });
+      }
+    };
+
+    setupDropdownAccess('region-trigger', 'region-dropdown');
+    setupDropdownAccess('footer-region-trigger', 'footer-region-dropdown');
+    setupDropdownAccess('footer-type-trigger', 'footer-type-dropdown');
+    setupDropdownAccess('footer-impact-trigger', 'footer-impact-dropdown');
+
     // Close mobile menu when clicking outside
     document.addEventListener('click', (e) => {
       const mobileMenu = $('#mobile-menu');
@@ -798,6 +841,16 @@ export class PublicView {
     });
 
     // Filter events
+
+    // Search input with debounce
+    let searchTimeout;
+    $('#public-search')?.addEventListener('input', (e) => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        this.filters.q = e.target.value;
+        this.loadIncidents();
+      }, 300);
+    });
     $('#filter-type')?.addEventListener('change', (e) => {
       this.filters.type = e.target.value;
       this.loadIncidents();
@@ -1274,12 +1327,13 @@ export class PublicView {
               <span class="block text-sm mb-1" style="color:${CONFIG.COLORS.grayText};opacity:.7">Source</span>
               <span style="color:${CONFIG.COLORS.grayText}">
                 ${this.escapeHTML(this.formatSourceLabel(incident.source_type))}
-                ${incident.link ?
-        `<a href="${incident.link}" target="_blank" class="mt-2 flex items-center justify-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded hover:bg-blue-100 transition-colors text-sm font-medium border border-blue-200">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                    View Original PDF
-                  </a>`
-        : ''}
+                ${incident.link ? (() => {
+        const linkUrl = incident.link.startsWith('http') ? incident.link : `${CONFIG.API_BASE_URL}${incident.link}`;
+        return `<a href="${linkUrl}" target="_blank" class="mt-2 flex items-center justify-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded hover:bg-blue-100 transition-colors text-sm font-medium border border-blue-200">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+            View Original PDF
+          </a>`;
+      })() : ''}
               </span>
             </div>
             <div>

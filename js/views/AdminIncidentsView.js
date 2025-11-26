@@ -45,9 +45,9 @@ export class AdminIncidentsView {
     if (!app) return;
 
     app.innerHTML = this.getHTML();
+    this.bindEvents();
     await this.loadRegions();
     await this.loadIncidents();
-    this.bindEvents();
   }
 
   async loadRegions() {
@@ -78,7 +78,7 @@ export class AdminIncidentsView {
   }
 
   getHTML() {
-    const { grayText, grayBg, red } = CONFIG.COLORS;
+    const { grayText, grayBg, blue } = CONFIG.COLORS;
 
     return `
       <div class="min-h-screen flex flex-col">
@@ -96,13 +96,75 @@ export class AdminIncidentsView {
 
             <div id="incidents-message" class="hidden mb-4"></div>
 
-            ${this.getFiltersHTML()}
+            <div class="flex flex-wrap gap-3 p-4 mb-6 rounded-lg filter-panel border border-gray-200 bg-gray-50">
+              <div class="flex-1 min-w-[180px]">
+                <label class="block text-sm mb-1" style="color:${grayText}">Type</label>
+                <select id="filter-type" class="w-full px-3 py-2 rounded border bg-white" style="color:${grayText}">
+                  <option value="">All Types</option>
+                  ${CONFIG.INCIDENT_TYPES.map(type => `
+                    <option value="${type.value}">${type.label}</option>
+                  `).join('')}
+                </select>
+              </div>
+
+              <div class="flex-1 min-w-[250px]">
+                <label class="block text-sm mb-1" style="color:${grayText}">Regions</label>
+                <div class="custom-dropdown bg-white" id="region-dropdown">
+                  <div class="dropdown-trigger" id="region-trigger"
+                       tabindex="0" role="button" aria-haspopup="true" aria-expanded="false" aria-label="Select Regions">
+                    <span id="region-trigger-text">Select Regions</span>
+                    <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                  <div class="dropdown-menu" id="region-menu" role="menu">
+                    <!-- Checkboxes injected here -->
+                    <div class="p-2 text-sm text-gray-400">Loading...</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex-1 min-w-[180px]">
+                <label class="block text-sm mb-1" style="color:${grayText}">Impact</label>
+                <select id="filter-impact" class="w-full px-3 py-2 rounded border bg-white" style="color:${grayText}">
+                  <option value="">All Impact Levels</option>
+                  <option value="high">High</option>
+                  <option value="medium">Medium</option>
+                  <option value="low">Low</option>
+                </select>
+              </div>
+
+              <div class="flex-1 min-w-[150px]">
+                <label class="block text-sm mb-1" style="color:${grayText}">From</label>
+                <input type="date" id="filter-date-from" class="w-full px-3 py-2 rounded border bg-white" style="color:${grayText}">
+              </div>
+
+              <div class="flex-1 min-w-[150px]">
+                <label class="block text-sm mb-1" style="color:${grayText}">To</label>
+                <input type="date" id="filter-date-to" class="w-full px-3 py-2 rounded border bg-white" style="color:${grayText}">
+              </div>
+
+              <!-- Search Bar -->
+              <div class="flex-1 min-w-[200px] relative">
+                <label class="block text-sm mb-1" style="color:${grayText}">Search</label>
+                <input type="text" id="admin-search" placeholder="Search incidents..." 
+                  class="pl-8 pr-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                  value="${this.filters.q || ''}" />
+                <span class="absolute left-2.5 top-[34px] text-gray-400">🔍</span>
+              </div>
+
+              <div class="flex items-end w-full sm:w-auto">
+                <button id="reset-filters" class="px-4 py-2 rounded border bg-white hover:bg-gray-50 w-full sm:w-auto" style="color:${grayText}">
+                  Reset Filters
+                </button>
+              </div>
+            </div>
 
             <div id="bulk-actions" class="hidden mb-4 p-4 rounded-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2" style="background-color:rgba(58,118,146,0.1)">
               <span class="text-sm sm:text-base" style="color:${grayText}">
                 <span id="selected-count">0</span> incident(s) selected
               </span>
-              <button id="bulk-delete-btn" class="px-4 py-2 rounded text-white text-sm" style="background-color:${red}">
+              <button id="bulk-delete-btn" class="px-4 py-2 rounded text-white text-sm" style="background-color:${CONFIG.COLORS.red}">
                 Delete Selected
               </button>
             </div>
@@ -217,62 +279,187 @@ export class AdminIncidentsView {
       return;
     }
 
-    const { grayText, grayBg, blue, red } = CONFIG.COLORS;
+    const { grayText, grayBg } = CONFIG.COLORS;
 
     container.innerHTML = `
-      <table class="w-full min-w-[900px]">
+      <table class="w-full min-w-[900px]" id="incidents-table">
         <thead style="background-color:${grayBg}">
           <tr>
-            <th class="px-4 py-3 text-left">
-              <input id="select-all" type="checkbox" class="w-4 h-4" aria-label="Select all incidents" />
+            <th class="px-3 py-2 text-left w-10">
+              <input id="select-all" type="checkbox" class="w-4 h-4" />
             </th>
-            <th class="px-4 py-3 text-left" style="color:${grayText}">Location</th>
-            <th class="px-4 py-3 text-left" style="color:${grayText}">Type</th>
-            <th class="px-4 py-3 text-left" style="color:${grayText}">Impact</th>
-            <th class="px-4 py-3 text-left" style="color:${grayText}">Start Date</th>
-            <th class="px-4 py-3 text-left" style="color:${grayText}">Status</th>
-            <th class="px-4 py-3 text-left" style="color:${grayText}">Actions</th>
+            <th class="px-3 py-2 text-left text-sm w-1/3" style="color:${grayText}">Incident Details</th>
+            <th class="px-3 py-2 text-left text-sm" style="color:${grayText}">Type & Source</th>
+            <th class="px-3 py-2 text-left text-sm" style="color:${grayText}">Region</th>
+            <th class="px-3 py-2 text-left text-sm" style="color:${grayText}">Timing</th>
+            <th class="px-1 py-2 text-center text-sm w-10" style="color:${grayText}"></th>
           </tr>
         </thead>
-        <tbody>
-          ${this.incidents.map((incident, idx) => `
-            <tr class="border-t hover:bg-gray-50 ${idx % 2 === 0 ? 'bg-white' : 'bg-gray-100'}">
-              <td class="px-4 py-3">
-                <input type="checkbox" class="row-select w-4 h-4" value="${incident.id}" aria-label="Select incident" />
-              </td>
-              <td class="px-4 py-3" style="color:${grayText}">${this.escapeHTML(incident.title || 'N/A')}</td>
-              <td class="px-4 py-3">
-                <span class="px-2 py-1 rounded text-sm type-${(incident.type || '').toLowerCase()}" style="color:${grayText}">
-                  ${this.escapeHTML(this.formatTypeLabel(incident.type))}
-                </span>
-              </td>
-              <td class="px-4 py-3">
-                <span class="px-2 py-1 rounded text-sm impact-${(incident.impact || 'low').toLowerCase()}" style="color:${grayText}">
-                  ${this.escapeHTML(incident.impact || 'N/A')}
-                </span>
-              </td>
-              <td class="px-4 py-3" style="color:${grayText}">${this.formatDate(incident.start_date)}</td>
-              <td class="px-4 py-3">
-                <span class="status-badge status-${(incident.status || 'draft').toLowerCase()}">
-                  ${this.escapeHTML((incident.status || 'draft').charAt(0).toUpperCase() + (incident.status || 'draft').slice(1))}
-                </span>
-              </td>
-              <td class="px-4 py-3">
-                <button class="delete-btn p-1 hover:bg-gray-200 rounded" data-id="${incident.id}" style="color:${red}" aria-label="Delete incident">
-                  🗑️
-                </button>
-              </td>
-            </tr>
-          `).join('')}
+        <tbody id="incidents-table-body">
+          ${this.renderTableBody()}
         </tbody>
       </table>
     `;
 
-    this.bindTableEvents();
+    this.bindDynamicEvents();
   }
 
-  bindTableEvents() {
-    // Select all checkbox
+  renderTableBody() {
+    return this.incidents.map((incident, idx) => {
+      if (this.editingIncidentId === incident.id) {
+        return this.renderEditRow(incident);
+      }
+      return this.renderRow(incident, idx);
+    }).join('');
+  }
+
+  renderRow(incident, idx) {
+    const { grayText, lbpaGreen, red } = CONFIG.COLORS;
+    const isEven = idx % 2 === 0;
+    const isSelected = this.selectedIds.includes(incident.id);
+
+    return `
+      <tr class="border-t ${isEven ? 'bg-white' : 'bg-gray-50'} hover:bg-gray-100 transition-colors">
+        <td class="px-3 py-2 align-top pt-3">
+          <input type="checkbox" class="row-select w-4 h-4" value="${incident.id}" ${isSelected ? 'checked' : ''} />
+        </td>
+        <td class="px-3 py-2 text-sm" style="color:${grayText}">
+          <div class="font-bold mb-1">${this.escapeHTML(incident.title || 'N/A')}</div>
+          ${(incident.location && incident.location !== incident.title) ?
+        `<div class="text-xs text-gray-600 mb-1">📍 ${this.escapeHTML(incident.location)}</div>` : ''}
+          <div class="text-xs opacity-75 line-clamp-2">${this.escapeHTML(incident.description || '')}</div>
+        </td>
+        <td class="px-3 py-2 text-sm" style="color:${grayText}">
+          <div class="font-medium">${this.escapeHTML(this.formatTypeLabel(incident.type))}</div>
+          <div class="text-xs opacity-75 mt-1">
+            Source: ${this.escapeHTML(incident.source || 'Metrolinx')}
+            ${incident.external_link ? ` <a href="${incident.external_link}" target="_blank" class="text-blue-600 hover:underline" title="View Source">📄</a>` : ''}
+          </div>
+          <div class="text-xs opacity-75">Impact: ${this.escapeHTML(incident.impact || 'N/A')}</div>
+        </td>
+        <td class="px-3 py-2 text-sm" style="color:${grayText}">
+          <span class="inline-block px-2 py-0.5 rounded text-xs bg-gray-200">
+            ${this.escapeHTML(incident.district || 'N/A')}
+          </span>
+        </td>
+        <td class="px-3 py-2 text-sm" style="color:${grayText}">
+          <div class="whitespace-nowrap">Start: ${this.formatDate(incident.start_date)}</div>
+          <div class="whitespace-nowrap opacity-75">End: ${this.formatDate(incident.end_date)}</div>
+        </td>
+        <td class="px-1 py-2 text-center text-sm whitespace-nowrap align-middle">
+          <div class="flex flex-col gap-1 items-center justify-center">
+            <button class="edit-btn p-1.5 hover:bg-blue-100 text-blue-600 rounded transition-colors" data-id="${incident.id}" title="Edit">
+              ✏️
+            </button>
+            <button class="delete-btn p-1.5 hover:bg-red-100 text-red-600 rounded transition-colors" data-id="${incident.id}" title="Delete">
+              🗑️
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }
+
+  renderEditRow(incident) {
+    const { grayText, green, grayBg } = CONFIG.COLORS;
+
+    // Helper to format date for input (YYYY-MM-DD)
+    const toInputDate = (dateStr) => {
+      if (!dateStr) return '';
+      try {
+        return new Date(dateStr).toISOString().split('T')[0];
+      } catch { return ''; }
+    };
+
+    return `
+      <tr class="bg-yellow-50 border-t border-b border-yellow-200">
+        <td colspan="6" class="p-4">
+          <form class="edit-form grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" data-id="${incident.id}">
+            <div class="col-span-1 sm:col-span-2 lg:col-span-3">
+              <label class="block text-xs font-bold mb-1" style="color:${grayText}">Title</label>
+              <input type="text" name="title" value="${this.escapeHTML(incident.title || '')}" class="w-full text-sm border rounded p-1" required />
+            </div>
+            
+            <div class="col-span-1 sm:col-span-2 lg:col-span-3">
+              <label class="block text-xs font-bold mb-1" style="color:${grayText}">Description</label>
+              <textarea name="description" rows="3" class="w-full text-sm border rounded p-1">${this.escapeHTML(incident.description || '')}</textarea>
+            </div>
+
+            <div class="col-span-1 sm:col-span-2">
+              <label class="block text-xs font-bold mb-1" style="color:${grayText}">Location</label>
+              <input type="text" name="location" value="${this.escapeHTML(incident.location || '')}" class="w-full text-sm border rounded p-1" />
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold mb-1" style="color:${grayText}">Region</label>
+              <select name="district" class="w-full text-sm border rounded p-1">
+                <option value="">Select Region...</option>
+                <option value="Leaside-Thorncliffe" ${incident.district === 'Leaside-Thorncliffe' ? 'selected' : ''}>Leaside-Thorncliffe</option>
+                <option value="East York" ${incident.district === 'East York' ? 'selected' : ''}>East York</option>
+                <option value="Scarborough" ${incident.district === 'Scarborough' ? 'selected' : ''}>Scarborough</option>
+                <option value="North York" ${incident.district === 'North York' ? 'selected' : ''}>North York</option>
+                <option value="Etobicoke" ${incident.district === 'Etobicoke' ? 'selected' : ''}>Etobicoke</option>
+                <option value="Toronto" ${incident.district === 'Toronto' ? 'selected' : ''}>Toronto</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold mb-1" style="color:${grayText}">Type</label>
+              <select name="type" class="w-full text-sm border rounded p-1">
+                ${CONFIG.INCIDENT_TYPES.map(t => `
+                  <option value="${t.value}" ${incident.type === t.value ? 'selected' : ''}>${t.label}</option>
+                `).join('')}
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold mb-1" style="color:${grayText}">Impact</label>
+              <select name="impact" class="w-full text-sm border rounded p-1">
+                <option value="low" ${incident.impact === 'low' ? 'selected' : ''}>Low</option>
+                <option value="medium" ${incident.impact === 'medium' ? 'selected' : ''}>Medium</option>
+                <option value="high" ${incident.impact === 'high' ? 'selected' : ''}>High</option>
+                <option value="critical" ${incident.impact === 'critical' ? 'selected' : ''}>Critical</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold mb-1" style="color:${grayText}">Source</label>
+              <select name="source" class="w-full text-sm border rounded p-1">
+                ${CONFIG.SOURCE_TYPES.map(s => `
+                  <option value="${s.value}" ${incident.source === s.value ? 'selected' : ''}>${s.label}</option>
+                `).join('')}
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold mb-1" style="color:${grayText}">Start Date</label>
+              <input type="date" name="start_date" value="${toInputDate(incident.start_date)}" class="w-full text-sm border rounded p-1" required />
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold mb-1" style="color:${grayText}">End Date</label>
+              <input type="date" name="end_date" value="${toInputDate(incident.end_date)}" class="w-full text-sm border rounded p-1" />
+            </div>
+
+            <div class="col-span-1 sm:col-span-2 lg:col-span-3 flex justify-end gap-2 mt-2">
+              <button type="button" class="cancel-btn px-3 py-1 rounded text-sm border bg-white hover:bg-gray-50" data-id="${incident.id}">
+                Cancel
+              </button>
+              <button type="submit" class="save-btn px-4 py-1 rounded text-sm text-white" style="background-color:${green}">
+                💾 Save Changes
+              </button>
+            </div>
+          </form>
+        </td>
+      </tr>
+    `;
+  }
+
+  bindDynamicEvents() {
+    const tableBody = $('#incidents-table-body');
+    if (!tableBody) return;
+
+    // Select All
     $('#select-all')?.addEventListener('change', (e) => {
       const checked = e.target.checked;
       $$('.row-select').forEach(checkbox => {
@@ -288,13 +475,63 @@ export class AdminIncidentsView {
       });
     });
 
-    // Delete buttons
-    $$('.delete-btn').forEach(btn => {
+    // Edit button
+    tableBody.querySelectorAll('.edit-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const id = parseInt(e.currentTarget.dataset.id);
+        this.toggleEditMode(id);
+      });
+    });
+
+    // Delete button
+    tableBody.querySelectorAll('.delete-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const id = parseInt(e.currentTarget.dataset.id);
         this.deleteIncident(id);
       });
     });
+
+    // Cancel button
+    tableBody.querySelectorAll('.cancel-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.toggleEditMode(null);
+      });
+    });
+
+    // Save form
+    tableBody.querySelectorAll('.edit-form').forEach(form => {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const id = parseInt(e.currentTarget.dataset.id);
+        const formData = new FormData(e.currentTarget);
+        const data = Object.fromEntries(formData.entries());
+        this.saveIncident(id, data);
+      });
+    });
+  }
+
+  toggleEditMode(id) {
+    this.editingIncidentId = id;
+    const tableBody = $('#incidents-table-body');
+    if (tableBody) {
+      tableBody.innerHTML = this.renderTableBody();
+      this.bindDynamicEvents();
+    }
+  }
+
+  async saveIncident(id, data) {
+    try {
+      this.showMessage('Saving changes...', 'info');
+      const response = await api.updateIncident(id, data);
+
+      if (response.success) {
+        this.showMessage('Incident updated successfully', 'success');
+        this.toggleEditMode(null);
+        await this.loadIncidents(); // Reload to get fresh data
+      }
+    } catch (error) {
+      this.showMessage(`Update error: ${error.message}`, 'error');
+    }
   }
 
   updateSelectedIds() {
@@ -363,15 +600,67 @@ export class AdminIncidentsView {
       this.loadIncidents();
     });
 
-    $('#filter-region')?.addEventListener('change', (e) => {
-      this.filters.district = e.target.value;
+    $('#filter-impact')?.addEventListener('change', (e) => {
+      this.filters.impact = e.target.value;
       this.loadIncidents();
+    });
+
+    $('#filter-date-from')?.addEventListener('change', (e) => {
+      this.filters.start_date_from = e.target.value;
+      this.loadIncidents();
+    });
+
+    $('#filter-date-to')?.addEventListener('change', (e) => {
+      this.filters.end_date_to = e.target.value;
+      this.loadIncidents();
+    });
+
+    // Region Dropdown Toggle
+    const regionTrigger = $('#region-trigger');
+    const regionMenu = $('#region-menu');
+
+    regionTrigger?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      $('#region-dropdown').classList.toggle('active');
+      const isExpanded = $('#region-dropdown').classList.contains('active');
+      regionTrigger.setAttribute('aria-expanded', isExpanded);
+    });
+
+    // Keyboard accessibility
+    regionTrigger?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        $('#region-dropdown').classList.toggle('active');
+        const isExpanded = $('#region-dropdown').classList.contains('active');
+        regionTrigger.setAttribute('aria-expanded', isExpanded);
+      }
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!$('#region-dropdown')?.contains(e.target)) {
+        $('#region-dropdown')?.classList.remove('active');
+      }
+    });
+
+    // Search input with debounce
+    let searchTimeout;
+    $('#admin-search')?.addEventListener('input', (e) => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        this.filters.q = e.target.value;
+        this.loadIncidents();
+      }, 300);
     });
 
     $('#reset-filters')?.addEventListener('click', () => {
       this.filters = {};
       $('#filter-type').value = '';
-      $('#filter-region').value = '';
+      $('#filter-impact').value = '';
+      $('#filter-date-from').value = '';
+      $('#filter-date-to').value = '';
+      $('#admin-search').value = '';
+      this.updateRegionDropdown();
       this.loadIncidents();
     });
 

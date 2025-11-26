@@ -16,7 +16,10 @@ class APIClient {
    * Generic request handler with error handling and offline detection
    */
   async request(endpoint, options = {}) {
-    const url = `${this.baseURL}${endpoint}`;
+    // Add timestamp to prevent caching for GET requests
+    const separator = endpoint.includes('?') ? '&' : '?';
+    const url = `${this.baseURL}${endpoint}${separator}_t=${Date.now()}`;
+
     const defaultOptions = {
       headers: {
         'Content-Type': 'application/json',
