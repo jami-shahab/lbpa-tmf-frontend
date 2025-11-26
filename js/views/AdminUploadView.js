@@ -12,6 +12,161 @@ export class AdminUploadView {
   constructor() {
     this.confirmModal = new ConfirmModal();
     this.currentUpload = null;
+    this.editingIncidentId = null;
+  }
+
+  // ... (formatDate and formatTypeLabel remain same)
+
+  // ... (render, getHTML, getAdminHeaderHTML, getFooterHTML remain same)
+
+  // ... (bindEvents needs update for delegation, but I'll do that in next chunk)
+
+  // ... (handleFileUpload, showLoading, hideLoading remain same)
+
+  showPreview() {
+    const previewSection = $('#preview-section');
+    const previewContent = $('#preview-content');
+
+    if (!previewSection || !previewContent) return;
+
+    previewSection.classList.remove('hidden');
+
+    if (this.currentUpload.preview.length === 0) {
+      previewContent.innerHTML = `
+        <p class="text-center text-gray-500 py-8">No incidents found in the uploaded PDF.</p>
+      `;
+      return;
+    }
+
+    const { grayText } = CONFIG.COLORS;
+
+    previewContent.innerHTML = `
+      <div class="overflow-x-auto">
+        <table class="w-full" id="incidents-table">
+          <thead style="background-color:${CONFIG.COLORS.grayBg}">
+            <tr>
+              <th class="px-3 py-2 text-left text-sm" style="color:${grayText}">Location</th>
+              <th class="px-3 py-2 text-left text-sm" style="color:${grayText}">Type</th>
+              <th class="px-3 py-2 text-left text-sm" style="color:${grayText}">Region</th>
+              <th class="px-3 py-2 text-left text-sm" style="color:${grayText}">Start Date</th>
+              <th class="px-3 py-2 text-left text-sm" style="color:${grayText}">End Date</th>
+              <th class="px-3 py-2 text-right text-sm" style="color:${grayText}">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="incidents-table-body">
+            ${this.renderTableBody()}
+          </tbody>
+        </table>
+      </div>
+    `;
+
+    // Re-bind dynamic events
+    this.bindDynamicEvents();
+  }
+
+  renderTableBody() {
+    if (!this.currentUpload || !this.currentUpload.preview) return '';
+
+    return this.currentUpload.preview.map((incident, idx) => {
+      if (this.editingIncidentId === incident.id) {
+        return this.renderEditRow(incident);
+      }
+      return this.renderRow(incident, idx);
+    }).join('');
+  }
+
+  renderRow(incident, idx) {
+    const { grayText, lbpaGreen, red } = CONFIG.COLORS;
+    const isEven = idx % 2 === 0;
+
+    return `
+      <tr class="border-t ${isEven ? 'bg-white' : 'bg-gray-50'} hover:bg-gray-100 transition-colors">
+        <td class="px-3 py-2 text-sm" style="color:${grayText}">${this.escapeHTML(incident.title || 'N/A')}</td>
+        <td class="px-3 py-2 text-sm" style="color:${grayText}">${this.escapeHTML(this.formatTypeLabel(incident.type))}</td>
+        <td class="px-3 py-2 text-sm" style="color:${grayText}">${this.escapeHTML(incident.district || 'N/A')}</td>
+        <td class="px-3 py-2 text-sm" style="color:${grayText}">${this.formatDate(incident.start_date)}</td>
+        <td class="px-3 py-2 text-sm" style="color:${grayText}">${this.formatDate(incident.end_date)}</td>
+        <td class="px-3 py-2 text-right text-sm whitespace-nowrap">
+          <button class="edit-btn p-1 hover:bg-gray-200 rounded mr-1" data-id="${incident.id}" title="Edit">
+            ✏️
+          </button>
+          <button class="delete-btn p-1 hover:bg-red-100 rounded" data-id="${incident.id}" title="Delete">
+            🗑️
+          </button>
+        </td>
+      </tr>
+    `;
+  }
+
+  renderEditRow(incident) {
+    const { grayText, green, grayBg } = CONFIG.COLORS;
+
+    // Helper to format date for input (YYYY-MM-DD)
+    const toInputDate = (dateStr) => {
+      if (!dateStr) return '';
+      try {
+        return new Date(dateStr).toISOString().split('T')[0];
+      } catch { return ''; }
+    };
+
+    return `
+      <tr class="bg-yellow-50 border-t border-b border-yellow-200">
+        <td colspan="6" class="p-4">
+          <form class="edit-form grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" data-id="${incident.id}">
+            <div class="col-span-1 sm:col-span-2 lg:col-span-1">
+              <label class="block text-xs font-bold mb-1" style="color:${grayText}">Title</label>
+              <input type="text" name="title" value="${this.escapeHTML(incident.title || '')}" class="w-full text-sm border rounded p-1" required />
+            </div>
+            
+            <div>
+              <label class="block text-xs font-bold mb-1" style="color:${grayText}">Location</label>
+              <input type="text" name="location" value="${this.escapeHTML(incident.location || '')}" class="w-full text-sm border rounded p-1" />
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold mb-1" style="color:${grayText}">District</label>
+              <select name="district" class="w-full text-sm border rounded p-1">
+                <option value="">Select Region...</option>
+                <option value="Leaside-Thorncliffe" ${incident.district === 'Leaside-Thorncliffe' ? 'selected' : ''}>Leaside-Thorncliffe</option>
+                <option value="East York" ${incident.district === 'East York' ? 'selected' : ''}>East York</option>
+                <option value="Scarborough" ${incident.district === 'Scarborough' ? 'selected' : ''}>Scarborough</option>
+                <option value="North York" ${incident.district === 'North York' ? 'selected' : ''}>North York</option>
+                <option value="Etobicoke" ${incident.district === 'Etobicoke' ? 'selected' : ''}>Etobicoke</option>
+                <option value="Toronto" ${incident.district === 'Toronto' ? 'selected' : ''}>Toronto</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold mb-1" style="color:${grayText}">Type</label>
+              <select name="type" class="w-full text-sm border rounded p-1">
+                ${CONFIG.INCIDENT_TYPES.map(t => `
+                  <option value="${t.value}" ${incident.type === t.value ? 'selected' : ''}>${t.label}</option>
+                `).join('')}
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold mb-1" style="color:${grayText}">Start Date</label>
+              <input type="date" name="start_date" value="${toInputDate(incident.start_date)}" class="w-full text-sm border rounded p-1" required />
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold mb-1" style="color:${grayText}">End Date</label>
+              <input type="date" name="end_date" value="${toInputDate(incident.end_date)}" class="w-full text-sm border rounded p-1" />
+            </div>
+
+            <div class="col-span-1 sm:col-span-2 lg:col-span-3 flex justify-end gap-2 mt-2">
+              <button type="button" class="cancel-btn px-3 py-1 rounded text-sm border bg-white hover:bg-gray-50" data-id="${incident.id}">
+                Cancel
+              </button>
+              <button type="submit" class="save-btn px-4 py-1 rounded text-sm text-white" style="background-color:${green}">
+                💾 Save Changes
+              </button>
+            </div>
+          </form>
+        </td>
+      </tr>
+    `;
   }
 
   formatDate(dateString) {
@@ -203,6 +358,7 @@ export class AdminUploadView {
   }
 
   async handleFileUpload(file) {
+    this.showLoading();
     this.showMessage('Uploading and processing PDF...', 'info');
 
     try {
@@ -227,53 +383,39 @@ export class AdminUploadView {
       }
     } catch (error) {
       this.showMessage(`Upload error: ${error.message}`, 'error');
+    } finally {
+      this.hideLoading();
     }
   }
 
-  showPreview() {
-    const previewSection = $('#preview-section');
-    const previewContent = $('#preview-content');
-
-    if (!previewSection || !previewContent) return;
-
-    previewSection.classList.remove('hidden');
-
-    if (this.currentUpload.preview.length === 0) {
-      previewContent.innerHTML = `
-        <p class="text-center text-gray-500 py-8">No incidents found in the uploaded PDF.</p>
-      `;
-      return;
+  showLoading() {
+    const uploadZone = $('#upload-zone');
+    if (uploadZone) {
+      // Create spinner overlay if it doesn't exist
+      let spinner = uploadZone.querySelector('.loading-overlay');
+      if (!spinner) {
+        spinner = document.createElement('div');
+        spinner.className = 'loading-overlay absolute inset-0 bg-white/90 flex flex-col items-center justify-center z-10 rounded-lg';
+        // Use LBPA Green (#48825f)
+        spinner.innerHTML = `
+          <div class="animate-spin rounded-full h-12 w-12 border-b-2 mb-3" style="border-color:#48825f"></div>
+          <p class="font-semibold animate-pulse" style="color:#48825f">Processing PDF with AI...</p>
+        `;
+        uploadZone.style.position = 'relative'; // Ensure relative positioning
+        uploadZone.appendChild(spinner);
+      }
+      spinner.classList.remove('hidden');
     }
-
-    const { grayText } = CONFIG.COLORS;
-
-    previewContent.innerHTML = `
-      <div class="overflow-x-auto">
-        <table class="w-full">
-          <thead style="background-color:${CONFIG.COLORS.grayBg}">
-            <tr>
-              <th class="px-3 py-2 text-left text-sm" style="color:${grayText}">Location</th>
-              <th class="px-3 py-2 text-left text-sm" style="color:${grayText}">Type</th>
-              <th class="px-3 py-2 text-left text-sm" style="color:${grayText}">Region</th>
-              <th class="px-3 py-2 text-left text-sm" style="color:${grayText}">Start Date</th>
-              <th class="px-3 py-2 text-left text-sm" style="color:${grayText}">End Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${this.currentUpload.preview.map((incident, idx) => `
-              <tr class="border-t ${idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}">
-                <td class="px-3 py-2 text-sm" style="color:${grayText}">${this.escapeHTML(incident.title || 'N/A')}</td>
-                <td class="px-3 py-2 text-sm" style="color:${grayText}">${this.escapeHTML(this.formatTypeLabel(incident.type))}</td>
-                <td class="px-3 py-2 text-sm" style="color:${grayText}">${this.escapeHTML(incident.district || 'N/A')}</td>
-                <td class="px-3 py-2 text-sm" style="color:${grayText}">${this.formatDate(incident.start_date)}</td>
-                <td class="px-3 py-2 text-sm" style="color:${grayText}">${this.formatDate(incident.end_date)}</td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-      </div>
-    `;
   }
+
+  hideLoading() {
+    const spinner = $('#upload-zone .loading-overlay');
+    if (spinner) {
+      spinner.remove(); // Completely remove from DOM
+    }
+  }
+
+
 
   async publishIncidents() {
     if (!this.currentUpload) return;

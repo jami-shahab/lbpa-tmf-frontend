@@ -144,6 +144,13 @@ class APIClient {
     });
   }
 
+  async updateIncident(incidentId, data) {
+    return this.request(CONFIG.API_ENDPOINTS.ADMIN_INCIDENT_UPDATE(incidentId), {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  }
+
   async deleteIncident(incidentId) {
     return this.request(CONFIG.API_ENDPOINTS.ADMIN_INCIDENT_DELETE(incidentId), {
       method: 'DELETE',

@@ -324,3 +324,80 @@ body {
 .dropdown-item input[type="checkbox"] {
   cursor: pointer;
 }
+
+/* Fullscreen Map Styles */
+.map-fullscreen {
+  position: fixed !important;
+  top: 5vh !important;
+  left: 5vw !important;
+  width: 90vw !important;
+  height: 90vh !important;
+  z-index: 10001 !important;
+  /* Must be higher than backdrop */
+  border-radius: 0.5rem !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+  margin: 0 !important;
+  animation: expandFullscreen 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  display: flex !important;
+  flex-direction: column !important;
+  background-color: white !important;
+}
+
+/* Ensure map container fills the card when fullscreen */
+.map-fullscreen #map-container {
+  height: auto !important;
+  flex: 1 !important;
+  min-height: 0 !important;
+  /* Allow shrinking if needed */
+}
+
+@keyframes expandFullscreen {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.map-fullscreen-btn {
+  background-color: white;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.map-fullscreen-btn:hover {
+  background-color: #f4f4f4;
+}
+
+/* Darken background effect */
+.fullscreen-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 10000;
+  /* Lower than map */
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  backdrop-filter: blur(4px);
+  /* Nice blur effect */
+}
+
+.fullscreen-backdrop.active {
+  opacity: 1;
+  pointer-events: auto;
+}

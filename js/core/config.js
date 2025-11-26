@@ -44,6 +44,7 @@ export const CONFIG = {
     ADMIN_UPLOADS: '/admin/uploads',
     ADMIN_UPLOAD_PUBLISH: (id) => `/admin/uploads/${id}/publish`,
     ADMIN_UPLOAD_DELETE: (id) => `/admin/uploads/${id}`,
+    ADMIN_INCIDENT_UPDATE: (id) => `/admin/incidents/${id}`,
     ADMIN_INCIDENT_DELETE: (id) => `/admin/incidents/${id}`,
     ADMIN_INCIDENTS_BULK: '/admin/incidents/bulk',
     ADMIN_LOGS: '/admin/logs',

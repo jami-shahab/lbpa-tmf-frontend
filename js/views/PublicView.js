@@ -418,6 +418,7 @@ export class PublicView {
         </main>
 
         <div id="detail-overlay" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-end z-50"></div>
+        <div id="fullscreen-backdrop" class="fullscreen-backdrop"></div>
 
         ${this.getFooterHTML()}
       </div>
@@ -619,11 +620,16 @@ export class PublicView {
     const { grayText, grayBg } = CONFIG.COLORS;
 
     return `
-      <div class="rounded-lg border overflow-hidden">
-        <div class="p-3 flex items-center justify-between" style="background-color:${grayBg}">
+      <div id="map-card" class="rounded-lg border overflow-hidden relative bg-white flex flex-col">
+        <div class="p-3 flex items-center justify-between flex-shrink-0" style="background-color:${grayBg}">
           <h3 class="font-semibold" style="color:${grayText}">Map View</h3>
+          <button id="map-fullscreen-btn" class="text-gray-600 hover:text-gray-900 focus:outline-none" title="Toggle Fullscreen">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+            </svg>
+          </button>
         </div>
-        <div id="map-container" style="height:600px;position:relative;">
+        <div id="map-container" class="flex-1 relative transition-all duration-300" style="min-height:600px;">
           ${this.getMapLegendHTML()}
         </div>
       </div>
@@ -951,6 +957,64 @@ export class PublicView {
     $('#close-subscribe')?.addEventListener('click', () => {
       this.subscribeModal.hide();
     });
+
+    // Fullscreen Map Toggle
+    const fsBtn = $('#map-fullscreen-btn');
+    const mapCard = $('#map-card');
+    const backdrop = $('#fullscreen-backdrop');
+
+    // Placeholder for restoring map position
+    this.mapPlaceholder = document.createComment('map-placeholder');
+
+    if (fsBtn && mapCard) {
+      fsBtn.addEventListener('click', () => {
+        const isFullscreen = mapCard.classList.contains('map-fullscreen');
+
+        if (!isFullscreen) {
+          // Enter Fullscreen
+          // 1. Insert placeholder
+          mapCard.parentNode.insertBefore(this.mapPlaceholder, mapCard);
+          // 2. Move to body
+          document.body.appendChild(mapCard);
+          // 3. Add class
+          mapCard.classList.add('map-fullscreen');
+          backdrop?.classList.add('active');
+          // 4. Update Icon (Compress)
+          fsBtn.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>`;
+        } else {
+          // Exit Fullscreen
+          // 1. Remove class
+          mapCard.classList.remove('map-fullscreen');
+          backdrop?.classList.remove('active');
+          // 2. Move back to placeholder
+          if (this.mapPlaceholder.parentNode) {
+            this.mapPlaceholder.parentNode.insertBefore(mapCard, this.mapPlaceholder);
+            this.mapPlaceholder.parentNode.removeChild(this.mapPlaceholder);
+          }
+          // 3. Update Icon (Expand)
+          fsBtn.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" /></svg>`;
+        }
+
+        // Force map resize recalculation after transition
+        setTimeout(() => {
+          if (this.map) this.map.invalidateSize();
+        }, 300);
+      });
+
+      // Close on backdrop click
+      backdrop?.addEventListener('click', () => {
+        if (mapCard.classList.contains('map-fullscreen')) {
+          fsBtn.click();
+        }
+      });
+
+      // Close on Escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && mapCard.classList.contains('map-fullscreen')) {
+          fsBtn.click();
+        }
+      });
+    }
   }
 
 
@@ -983,6 +1047,17 @@ export class PublicView {
       `;
       return;
     }
+
+    // Sort incidents: Start Date DESC, then End Date DESC
+    this.incidents.sort((a, b) => {
+      const startA = new Date(a.start_date || 0);
+      const startB = new Date(b.start_date || 0);
+      if (startB - startA !== 0) return startB - startA;
+
+      const endA = new Date(a.end_date || 0);
+      const endB = new Date(b.end_date || 0);
+      return endB - endA;
+    });
 
     const { grayText, blue } = CONFIG.COLORS;
 
@@ -1194,7 +1269,12 @@ export class PublicView {
             </div>
             <div>
               <span class="block text-sm mb-1" style="color:${CONFIG.COLORS.grayText};opacity:.7">Source</span>
-              <span style="color:${CONFIG.COLORS.grayText}">${this.escapeHTML(this.formatSourceLabel(incident.source_type))}</span>
+              <span style="color:${CONFIG.COLORS.grayText}">
+                ${this.escapeHTML(this.formatSourceLabel(incident.source_type))}
+                ${incident.source_type === 'metrolinx' && incident.upload_id ?
+        `<br><a href="./uploads/${incident.upload_id}.pdf" target="_blank" class="text-xs text-blue-600 hover:underline mt-1 inline-block">View Original PDF</a>`
+        : ''}
+              </span>
             </div>
             <div>
               <span class="block text-sm mb-1" style="color:${CONFIG.COLORS.grayText};opacity:.7">Start Date</span>
