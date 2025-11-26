@@ -45,61 +45,99 @@
             <!-- Section 1 -->
             <div style="margin-top:32px;">
                 <h2 style="color:#2d3748;font-size:18px;font-weight:600;border-left:4px solid #48825f;padding-left:12px;margin-bottom:16px;">Current Incidents (This Month)</h2>
-                <div style="background-color:#e2e8f0;padding:10px 16px;font-weight:700;color:#2d3748;font-size:15px;border-radius:6px 6px 0 0;margin-top:24px;border:1px solid #cbd5e0;border-bottom:none;">Tuesday, Nov 17</div><table style="width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed;border-left:1px solid #cbd5e0;border-right:1px solid #cbd5e0;border-radius:0 0 6px 6px;">
-                    <tbody><tr style="background-color:#ffffff;">
-                        <td class="mobile-stack mobile-stack-top" style="padding:16px;color:rgb(89, 89, 89);font-size:15px;border-bottom:1px solid #e5e7eb;">
-                            <div style="font-weight:600;color:#1a202c;margin-bottom:4px;">Sheppard Ave E 121 m East of Aragon Ave to 89 m East of Aragon Ave</div>
-                            <div style="font-size:13px;color:#718096;">Construction</div>
-                        </td>
-                        <td class="mobile-stack mobile-stack-bottom" style="padding:16px;text-align:right;white-space:nowrap;vertical-align:top;border-bottom:1px solid #e5e7eb;">
-                            <div style="margin-bottom:6px;">
-                                <span style="display:inline-block;padding:4px 8px;border-radius:4px;font-size:12px;font-weight:600;background-color:rgba(234, 179, 8, 0.15);color:rgb(180, 83, 9);border:1px solid rgba(234, 179, 8, 0.2);">
-                                    High Impact
-                                </span>
-                            </div>
-                            <div style="font-size:13px;color:#718096;">Scarborough</div>
-                        </td>
-                    </tr><tr style="background-color:#f8fafc;">
-                        <td class="mobile-stack mobile-stack-top" style="padding:16px;color:rgb(89, 89, 89);font-size:15px;border-bottom:1px solid #e5e7eb;">
-                            <div style="font-weight:600;color:#1a202c;margin-bottom:4px;">Midland Ave 60 m North of Finch Ave E to 87 m North of Finch Ave E</div>
-                            <div style="font-size:13px;color:#718096;">Construction</div>
-                        </td>
-                        <td class="mobile-stack mobile-stack-bottom" style="padding:16px;text-align:right;white-space:nowrap;vertical-align:top;border-bottom:1px solid #e5e7eb;">
-                            <div style="margin-bottom:6px;">
-                                <span style="display:inline-block;padding:4px 8px;border-radius:4px;font-size:12px;font-weight:600;background-color:rgba(234, 179, 8, 0.15);color:rgb(180, 83, 9);border:1px solid rgba(234, 179, 8, 0.2);">
-                                    High Impact
-                                </span>
-                            </div>
-                            <div style="font-size:13px;color:#718096;">Scarborough</div>
-                        </td>
-                    </tr><tr style="background-color:#ffffff;">
-                        <td class="mobile-stack mobile-stack-top" style="padding:16px;color:rgb(89, 89, 89);font-size:15px;border-bottom:1px solid #e5e7eb;">
-                            <div style="font-weight:600;color:#1a202c;margin-bottom:4px;">Kennedy Rd 4 m North of Pently Cres to 31 m North of Pently Cres</div>
-                            <div style="font-size:13px;color:#718096;">Construction</div>
-                        </td>
-                        <td class="mobile-stack mobile-stack-bottom" style="padding:16px;text-align:right;white-space:nowrap;vertical-align:top;border-bottom:1px solid #e5e7eb;">
-                            <div style="margin-bottom:6px;">
-                                <span style="display:inline-block;padding:4px 8px;border-radius:4px;font-size:12px;font-weight:600;background-color:rgba(234, 179, 8, 0.15);color:rgb(180, 83, 9);border:1px solid rgba(234, 179, 8, 0.2);">
-                                    High Impact
-                                </span>
-                            </div>
-                            <div style="font-size:13px;color:#718096;">Scarborough</div>
-                        </td>
-                    </tr><tr style="background-color:#f8fafc;">
-                        <td class="mobile-stack mobile-stack-top" style="padding:16px;color:rgb(89, 89, 89);font-size:15px;border-bottom:1px solid #cbd5e0;border-radius:0 0 6px 6px;">
-                            <div style="font-weight:600;color:#1a202c;margin-bottom:4px;">Kennedy Rd 28 m North of Cowdray Crt to 50 m North of Cowdray Crt</div>
-                            <div style="font-size:13px;color:#718096;">Construction</div>
-                        </td>
-                        <td class="mobile-stack mobile-stack-bottom" style="padding:16px;text-align:right;white-space:nowrap;vertical-align:top;border-bottom:1px solid #cbd5e0;border-radius:0 0 6px 6px;">
-                            <div style="margin-bottom:6px;">
-                                <span style="display:inline-block;padding:4px 8px;border-radius:4px;font-size:12px;font-weight:600;background-color:rgba(234, 179, 8, 0.15);color:rgb(180, 83, 9);border:1px solid rgba(234, 179, 8, 0.2);">
-                                    High Impact
-                                </span>
-                            </div>
-                            <div style="font-size:13px;color:#718096;">Scarborough</div>
-                        </td>
-                    </tr></tbody>
-                </table>
+                <table style="width:100%;border-collapse:separate;border-spacing:0;border:1px solid #cbd5e0;border-radius:6px;overflow:hidden;">
+                
+            <thead>
+                <tr style="background-color:#f1f5f9;color:#475569;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">
+                    <th style="padding:12px 16px;text-align:left;font-weight:700;">Location</th>
+                    <th style="padding:12px 16px;text-align:left;font-weight:700;">Dates</th>
+                    <th style="padding:12px 16px;text-align:left;font-weight:700;">Type</th>
+                    <th style="padding:12px 16px;text-align:right;font-weight:700;">Impact</th>
+                </tr>
+            </thead>
+        
+                <tbody><tr style="background-color:#ffffff;">
+                    <td class="mobile-stack mobile-stack-top" style="padding:16px;color:rgb(89, 89, 89);font-size:14px;border-bottom:1px solid #e5e7eb;">
+                        <div style="font-weight:700;color:#1a202c;margin-bottom:4px;font-size:15px;">Sheppard Ave E 121 m East of Aragon Ave to 89 m East of Aragon Ave</div>
+                        <div style="font-size:13px;color:#4a5568;margin-bottom:2px;">Sheppard Ave E 121 m East of Aragon Ave to 89 m East of Aragon Ave</div>
+                        <div style="font-size:12px;color:#718096;">Scarborough</div>
+                    </td>
+                    <td class="mobile-stack" style="padding:16px;color:#4a5568;font-size:13px;white-space:nowrap;vertical-align:top;border-bottom:1px solid #e5e7eb;">
+                        <div style="margin-bottom:2px;"><strong>Start:</strong> Nov 17</div>
+                        <div><strong>End:</strong> Dec 15</div>
+                    </td>
+                    <td class="mobile-stack" style="padding:16px;vertical-align:top;border-bottom:1px solid #e5e7eb;">
+                         <span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;background-color:#fff7ed;color:#c05621;border:1px solid #ffedd5;">
+                            Construction
+                        </span>
+                    </td>
+                    <td class="mobile-stack mobile-stack-bottom" style="padding:16px;text-align:right;vertical-align:top;border-bottom:1px solid #e5e7eb;">
+                        <span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;background-color:rgba(234, 179, 8, 0.15);color:rgb(180, 83, 9);border:1px solid rgba(234, 179, 8, 0.2);">
+                            High
+                        </span>
+                    </td>
+                </tr><tr style="background-color:#f8fafc;">
+                    <td class="mobile-stack mobile-stack-top" style="padding:16px;color:rgb(89, 89, 89);font-size:14px;border-bottom:1px solid #e5e7eb;">
+                        <div style="font-weight:700;color:#1a202c;margin-bottom:4px;font-size:15px;">Midland Ave 60 m North of Finch Ave E to 87 m North of Finch Ave E</div>
+                        <div style="font-size:13px;color:#4a5568;margin-bottom:2px;">Midland Ave 60 m North of Finch Ave E to 87 m North of Finch Ave E</div>
+                        <div style="font-size:12px;color:#718096;">Scarborough</div>
+                    </td>
+                    <td class="mobile-stack" style="padding:16px;color:#4a5568;font-size:13px;white-space:nowrap;vertical-align:top;border-bottom:1px solid #e5e7eb;">
+                        <div style="margin-bottom:2px;"><strong>Start:</strong> Nov 17</div>
+                        <div><strong>End:</strong> Dec 15</div>
+                    </td>
+                    <td class="mobile-stack" style="padding:16px;vertical-align:top;border-bottom:1px solid #e5e7eb;">
+                         <span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;background-color:#fff7ed;color:#c05621;border:1px solid #ffedd5;">
+                            Construction
+                        </span>
+                    </td>
+                    <td class="mobile-stack mobile-stack-bottom" style="padding:16px;text-align:right;vertical-align:top;border-bottom:1px solid #e5e7eb;">
+                        <span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;background-color:rgba(234, 179, 8, 0.15);color:rgb(180, 83, 9);border:1px solid rgba(234, 179, 8, 0.2);">
+                            High
+                        </span>
+                    </td>
+                </tr><tr style="background-color:#ffffff;">
+                    <td class="mobile-stack mobile-stack-top" style="padding:16px;color:rgb(89, 89, 89);font-size:14px;border-bottom:1px solid #e5e7eb;">
+                        <div style="font-weight:700;color:#1a202c;margin-bottom:4px;font-size:15px;">Kennedy Rd 4 m North of Pently Cres to 31 m North of Pently Cres</div>
+                        <div style="font-size:13px;color:#4a5568;margin-bottom:2px;">Kennedy Rd 4 m North of Pently Cres to 31 m North of Pently Cres</div>
+                        <div style="font-size:12px;color:#718096;">Scarborough</div>
+                    </td>
+                    <td class="mobile-stack" style="padding:16px;color:#4a5568;font-size:13px;white-space:nowrap;vertical-align:top;border-bottom:1px solid #e5e7eb;">
+                        <div style="margin-bottom:2px;"><strong>Start:</strong> Nov 17</div>
+                        <div><strong>End:</strong> Dec 15</div>
+                    </td>
+                    <td class="mobile-stack" style="padding:16px;vertical-align:top;border-bottom:1px solid #e5e7eb;">
+                         <span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;background-color:#fff7ed;color:#c05621;border:1px solid #ffedd5;">
+                            Construction
+                        </span>
+                    </td>
+                    <td class="mobile-stack mobile-stack-bottom" style="padding:16px;text-align:right;vertical-align:top;border-bottom:1px solid #e5e7eb;">
+                        <span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;background-color:rgba(234, 179, 8, 0.15);color:rgb(180, 83, 9);border:1px solid rgba(234, 179, 8, 0.2);">
+                            High
+                        </span>
+                    </td>
+                </tr><tr style="background-color:#f8fafc;">
+                    <td class="mobile-stack mobile-stack-top" style="padding:16px;color:rgb(89, 89, 89);font-size:14px;">
+                        <div style="font-weight:700;color:#1a202c;margin-bottom:4px;font-size:15px;">Kennedy Rd 28 m North of Cowdray Crt to 50 m North of Cowdray Crt</div>
+                        <div style="font-size:13px;color:#4a5568;margin-bottom:2px;">Kennedy Rd 28 m North of Cowdray Crt to 50 m North of Cowdray Crt</div>
+                        <div style="font-size:12px;color:#718096;">Scarborough</div>
+                    </td>
+                    <td class="mobile-stack" style="padding:16px;color:#4a5568;font-size:13px;white-space:nowrap;vertical-align:top;">
+                        <div style="margin-bottom:2px;"><strong>Start:</strong> Nov 17</div>
+                        <div><strong>End:</strong> Dec 15</div>
+                    </td>
+                    <td class="mobile-stack" style="padding:16px;vertical-align:top;">
+                         <span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;background-color:#fff7ed;color:#c05621;border:1px solid #ffedd5;">
+                            Construction
+                        </span>
+                    </td>
+                    <td class="mobile-stack mobile-stack-bottom" style="padding:16px;text-align:right;vertical-align:top;">
+                        <span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;background-color:rgba(234, 179, 8, 0.15);color:rgb(180, 83, 9);border:1px solid rgba(234, 179, 8, 0.2);">
+                            High
+                        </span>
+                    </td>
+                </tr></tbody>
+            </table>
             </div>
 
             <!-- Section 2 -->
@@ -125,7 +163,7 @@
                 Alert Frequency: <span style="font-weight:600;color:#4a5568;">Monthly</span>
             </p>
             <p style="margin:0;">
-                <a href="https://hotpink-dugong-322722.hostingersite.com/tmf-api/unsubscribe/5b680735fb67c4ffee4a5f4213b05eec56ce5c79776cd9599405fae114a3d1a4" style="color:#48825f;text-decoration:underline;">Unsubscribe from this alert</a>
+                <a href="https://hotpink-dugong-322722.hostingersite.com/tmf-api/unsubscribe/59255df4ead37c2840ab15513810780440be7f7503a4961a3afb8aadaea5675b" style="color:#48825f;text-decoration:underline;">Unsubscribe from this alert</a>
             </p>
             
             <p style="margin-top:24px;font-size:12px;opacity:0.7;">&copy; Leaside Business Park Association</p>

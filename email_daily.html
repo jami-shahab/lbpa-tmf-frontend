@@ -5,6 +5,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LBPA Traffic Alert</title>
+    <style>
+        @media only screen and (max-width: 600px) {
+            .mobile-stack {
+                display: block !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+            }
+            .mobile-stack-top {
+                padding-bottom: 4px !important;
+            }
+            .mobile-stack-bottom {
+                padding-top: 4px !important;
+                text-align: left !important;
+                border-top: none !important;
+            }
+            .mobile-hide {
+                display: none !important;
+            }
+        }
+    </style>
 </head>
 <body style="font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;line-height:1.6;color:#333;margin:0;padding:20px;background-color:#f4f4f4;">
     
@@ -25,11 +47,11 @@
                 <h2 style="color:#2d3748;font-size:18px;font-weight:600;border-left:4px solid #48825f;padding-left:12px;margin-bottom:16px;">Current Incidents (This Month)</h2>
                 <div style="background-color:#e2e8f0;padding:10px 16px;font-weight:700;color:#2d3748;font-size:15px;border-radius:6px 6px 0 0;margin-top:24px;border:1px solid #cbd5e0;border-bottom:none;">Tuesday, Nov 17</div><table style="width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed;border-left:1px solid #cbd5e0;border-right:1px solid #cbd5e0;border-radius:0 0 6px 6px;">
                     <tbody><tr style="background-color:#ffffff;">
-                        <td style="padding:16px;color:rgb(89, 89, 89);font-size:15px;border-bottom:1px solid #e5e7eb;">
+                        <td class="mobile-stack mobile-stack-top" style="padding:16px;color:rgb(89, 89, 89);font-size:15px;border-bottom:1px solid #e5e7eb;">
                             <div style="font-weight:600;color:#1a202c;margin-bottom:4px;">Sheppard Ave E 121 m East of Aragon Ave to 89 m East of Aragon Ave</div>
                             <div style="font-size:13px;color:#718096;">Construction</div>
                         </td>
-                        <td style="padding:16px;text-align:right;white-space:nowrap;vertical-align:top;border-bottom:1px solid #e5e7eb;">
+                        <td class="mobile-stack mobile-stack-bottom" style="padding:16px;text-align:right;white-space:nowrap;vertical-align:top;border-bottom:1px solid #e5e7eb;">
                             <div style="margin-bottom:6px;">
                                 <span style="display:inline-block;padding:4px 8px;border-radius:4px;font-size:12px;font-weight:600;background-color:rgba(234, 179, 8, 0.15);color:rgb(180, 83, 9);border:1px solid rgba(234, 179, 8, 0.2);">
                                     High Impact
@@ -38,11 +60,11 @@
                             <div style="font-size:13px;color:#718096;">Scarborough</div>
                         </td>
                     </tr><tr style="background-color:#f8fafc;">
-                        <td style="padding:16px;color:rgb(89, 89, 89);font-size:15px;border-bottom:1px solid #e5e7eb;">
+                        <td class="mobile-stack mobile-stack-top" style="padding:16px;color:rgb(89, 89, 89);font-size:15px;border-bottom:1px solid #e5e7eb;">
                             <div style="font-weight:600;color:#1a202c;margin-bottom:4px;">Midland Ave 60 m North of Finch Ave E to 87 m North of Finch Ave E</div>
                             <div style="font-size:13px;color:#718096;">Construction</div>
                         </td>
-                        <td style="padding:16px;text-align:right;white-space:nowrap;vertical-align:top;border-bottom:1px solid #e5e7eb;">
+                        <td class="mobile-stack mobile-stack-bottom" style="padding:16px;text-align:right;white-space:nowrap;vertical-align:top;border-bottom:1px solid #e5e7eb;">
                             <div style="margin-bottom:6px;">
                                 <span style="display:inline-block;padding:4px 8px;border-radius:4px;font-size:12px;font-weight:600;background-color:rgba(234, 179, 8, 0.15);color:rgb(180, 83, 9);border:1px solid rgba(234, 179, 8, 0.2);">
                                     High Impact
@@ -51,11 +73,11 @@
                             <div style="font-size:13px;color:#718096;">Scarborough</div>
                         </td>
                     </tr><tr style="background-color:#ffffff;">
-                        <td style="padding:16px;color:rgb(89, 89, 89);font-size:15px;border-bottom:1px solid #e5e7eb;">
+                        <td class="mobile-stack mobile-stack-top" style="padding:16px;color:rgb(89, 89, 89);font-size:15px;border-bottom:1px solid #e5e7eb;">
                             <div style="font-weight:600;color:#1a202c;margin-bottom:4px;">Kennedy Rd 4 m North of Pently Cres to 31 m North of Pently Cres</div>
                             <div style="font-size:13px;color:#718096;">Construction</div>
                         </td>
-                        <td style="padding:16px;text-align:right;white-space:nowrap;vertical-align:top;border-bottom:1px solid #e5e7eb;">
+                        <td class="mobile-stack mobile-stack-bottom" style="padding:16px;text-align:right;white-space:nowrap;vertical-align:top;border-bottom:1px solid #e5e7eb;">
                             <div style="margin-bottom:6px;">
                                 <span style="display:inline-block;padding:4px 8px;border-radius:4px;font-size:12px;font-weight:600;background-color:rgba(234, 179, 8, 0.15);color:rgb(180, 83, 9);border:1px solid rgba(234, 179, 8, 0.2);">
                                     High Impact
@@ -64,11 +86,11 @@
                             <div style="font-size:13px;color:#718096;">Scarborough</div>
                         </td>
                     </tr><tr style="background-color:#f8fafc;">
-                        <td style="padding:16px;color:rgb(89, 89, 89);font-size:15px;border-bottom:1px solid #cbd5e0;border-radius:0 0 6px 6px;">
+                        <td class="mobile-stack mobile-stack-top" style="padding:16px;color:rgb(89, 89, 89);font-size:15px;border-bottom:1px solid #cbd5e0;border-radius:0 0 6px 6px;">
                             <div style="font-weight:600;color:#1a202c;margin-bottom:4px;">Kennedy Rd 28 m North of Cowdray Crt to 50 m North of Cowdray Crt</div>
                             <div style="font-size:13px;color:#718096;">Construction</div>
                         </td>
-                        <td style="padding:16px;text-align:right;white-space:nowrap;vertical-align:top;border-bottom:1px solid #cbd5e0;border-radius:0 0 6px 6px;">
+                        <td class="mobile-stack mobile-stack-bottom" style="padding:16px;text-align:right;white-space:nowrap;vertical-align:top;border-bottom:1px solid #cbd5e0;border-radius:0 0 6px 6px;">
                             <div style="margin-bottom:6px;">
                                 <span style="display:inline-block;padding:4px 8px;border-radius:4px;font-size:12px;font-weight:600;background-color:rgba(234, 179, 8, 0.15);color:rgb(180, 83, 9);border:1px solid rgba(234, 179, 8, 0.2);">
                                     High Impact
@@ -103,7 +125,7 @@
                 Alert Frequency: <span style="font-weight:600;color:#4a5568;">Monthly</span>
             </p>
             <p style="margin:0;">
-                <a href="https://hotpink-dugong-322722.hostingersite.com/tmf-api/unsubscribe/d5a2b90d191287ec148fd94373c9c2c9943cc6f82a010386996ff21a0e88f612" style="color:#48825f;text-decoration:underline;">Unsubscribe from this alert</a>
+                <a href="https://hotpink-dugong-322722.hostingersite.com/tmf-api/unsubscribe/5b680735fb67c4ffee4a5f4213b05eec56ce5c79776cd9599405fae114a3d1a4" style="color:#48825f;text-decoration:underline;">Unsubscribe from this alert</a>
             </p>
             
             <p style="margin-top:24px;font-size:12px;opacity:0.7;">&copy; Leaside Business Park Association</p>

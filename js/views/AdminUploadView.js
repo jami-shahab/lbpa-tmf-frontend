@@ -88,7 +88,10 @@ export class AdminUploadView {
         </td>
         <td class="px-3 py-2 text-sm" style="color:${grayText}">
           <div class="font-medium">${this.escapeHTML(this.formatTypeLabel(incident.type))}</div>
-          <div class="text-xs opacity-75 mt-1">Source: ${this.escapeHTML(incident.source || 'Metrolinx')}</div>
+          <div class="text-xs opacity-75 mt-1">
+            Source: ${this.escapeHTML(incident.source || 'Metrolinx')}
+            ${incident.link ? ` <a href="${incident.link}" target="_blank" class="text-blue-600 hover:underline" title="View PDF">📄</a>` : ''}
+          </div>
           <div class="text-xs opacity-75">Impact: ${this.escapeHTML(incident.impact || 'N/A')}</div>
         </td>
         <td class="px-3 py-2 text-sm" style="color:${grayText}">

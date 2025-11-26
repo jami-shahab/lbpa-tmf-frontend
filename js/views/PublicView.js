@@ -1271,8 +1271,11 @@ export class PublicView {
               <span class="block text-sm mb-1" style="color:${CONFIG.COLORS.grayText};opacity:.7">Source</span>
               <span style="color:${CONFIG.COLORS.grayText}">
                 ${this.escapeHTML(this.formatSourceLabel(incident.source_type))}
-                ${incident.source_type === 'metrolinx' && incident.upload_id ?
-        `<br><a href="./uploads/${incident.upload_id}.pdf" target="_blank" class="text-xs text-blue-600 hover:underline mt-1 inline-block">View Original PDF</a>`
+                ${incident.link ?
+        `<a href="${incident.link}" target="_blank" class="mt-2 flex items-center justify-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded hover:bg-blue-100 transition-colors text-sm font-medium border border-blue-200">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                    View Original PDF
+                  </a>`
         : ''}
               </span>
             </div>
