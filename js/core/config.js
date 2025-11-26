@@ -5,9 +5,8 @@
 
 export const CONFIG = {
   // Automatically switch between Local and Production based on Vite environment
-  API_BASE_URL: import.meta.env.DEV
-    ? 'http://localhost:8000'
-    : 'https://leasidebusinesspark.com/tmf-api',
+  // Force production URL for now to debug
+  API_BASE_URL: 'https://leasidebusinesspark.com/tmf-api',
 
   ADMIN_AUTH_TOKEN: '649dcf4cbc9bd36ad7a5b3f2f7182af6f406812191ee659aee00107defe05f0e',
 
@@ -36,7 +35,7 @@ export const CONFIG = {
     INCIDENTS: '/incidents',
     INCIDENT_BY_ID: (id) => `/incidents/${id}`,
     REGIONS: '/regions',
-    SUBSCRIBE: '/subscribe/',
+    SUBSCRIBE: '/api/public/subscribe.php',
     VERIFY_SUBSCRIPTION: (token) => `/subscribe/verify/${token}`,
     UNSUBSCRIBE: (token) => `/unsubscribe/${token}`,
 
