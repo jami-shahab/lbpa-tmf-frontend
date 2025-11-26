@@ -659,6 +659,10 @@ export class PublicView {
             <div class="w-3 h-3 rounded-full" style="background-color:${CONFIG.COLORS.green}"></div>
             <span>Special Event</span>
           </div>
+          <div class="flex items-center gap-2">
+            <div class="w-3 h-3 rounded-full" style="background-color:${CONFIG.COLORS.grayText}"></div>
+            <span>Other</span>
+          </div>
         </div>
       </div>
     `;
@@ -1083,10 +1087,9 @@ export class PublicView {
                 <div class="text-[10px] sm:text-xs">
                   <span class="font-medium">Start:</span> ${this.formatDate(incident.start_date).split(',')[0]}
                 </div>
-                ${incident.end_date ? `
                 <div class="text-[10px] sm:text-xs opacity-80">
-                  <span class="font-medium">End:</span> ${this.formatDate(incident.end_date).split(',')[0]}
-                </div>` : '<div class="text-[10px] sm:text-xs opacity-60">Ongoing</div>'}
+                  <span class="font-medium">End:</span> ${incident.end_date ? this.formatDate(incident.end_date).split(',')[0] : 'N/A'}
+                </div>
               </td>
               <td class="px-2 sm:px-3 py-3 text-center">
                 <span class="px-1.5 py-0.5 rounded text-[10px] sm:text-xs whitespace-nowrap type-${(incident.type || '').toLowerCase()}" style="color:${grayText}">
