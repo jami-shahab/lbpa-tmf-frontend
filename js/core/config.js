@@ -7,7 +7,7 @@ export const CONFIG = {
   // Automatically switch between Local and Production based on Vite environment
   API_BASE_URL: import.meta.env.DEV
     ? 'http://localhost:8000'
-    : 'https://hotpink-dugong-322722.hostingersite.com/tmf-api',
+    : 'https://leasidebusinesspark.com/tmf-api',
 
   ADMIN_AUTH_TOKEN: '649dcf4cbc9bd36ad7a5b3f2f7182af6f406812191ee659aee00107defe05f0e',
 
