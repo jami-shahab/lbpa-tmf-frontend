@@ -23,8 +23,14 @@ export class PublicView {
 
   formatDate(dateString) {
     if (!dateString) return 'N/A';
+    // Check for sentinel date (1970-01-01)
+    if (dateString.startsWith('1970-01-01')) return 'TBD';
+
     try {
       const date = new Date(dateString);
+      // Double check year just in case timezone shift makes it Dec 31 1969
+      if (date.getFullYear() <= 1970) return 'TBD';
+
       return date.toLocaleDateString('en-US', {
         month: 'short',
         day: 'numeric',
