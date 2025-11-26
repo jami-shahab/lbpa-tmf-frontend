@@ -45,12 +45,11 @@ export class AdminUploadView {
         <table class="w-full" id="incidents-table">
           <thead style="background-color:${CONFIG.COLORS.grayBg}">
             <tr>
-              <th class="px-3 py-2 text-left text-sm" style="color:${grayText}">Location</th>
-              <th class="px-3 py-2 text-left text-sm" style="color:${grayText}">Type</th>
+              <th class="px-3 py-2 text-left text-sm w-1/3" style="color:${grayText}">Incident Details</th>
+              <th class="px-3 py-2 text-left text-sm" style="color:${grayText}">Type & Source</th>
               <th class="px-3 py-2 text-left text-sm" style="color:${grayText}">Region</th>
-              <th class="px-3 py-2 text-left text-sm" style="color:${grayText}">Start Date</th>
-              <th class="px-3 py-2 text-left text-sm" style="color:${grayText}">End Date</th>
-              <th class="px-3 py-2 text-right text-sm" style="color:${grayText}">Actions</th>
+              <th class="px-3 py-2 text-left text-sm" style="color:${grayText}">Timing</th>
+              <th class="px-1 py-2 text-center text-sm w-10" style="color:${grayText}"></th>
             </tr>
           </thead>
           <tbody id="incidents-table-body">
@@ -81,18 +80,35 @@ export class AdminUploadView {
 
     return `
       <tr class="border-t ${isEven ? 'bg-white' : 'bg-gray-50'} hover:bg-gray-100 transition-colors">
-        <td class="px-3 py-2 text-sm" style="color:${grayText}">${this.escapeHTML(incident.title || 'N/A')}</td>
-        <td class="px-3 py-2 text-sm" style="color:${grayText}">${this.escapeHTML(this.formatTypeLabel(incident.type))}</td>
-        <td class="px-3 py-2 text-sm" style="color:${grayText}">${this.escapeHTML(incident.district || 'N/A')}</td>
-        <td class="px-3 py-2 text-sm" style="color:${grayText}">${this.formatDate(incident.start_date)}</td>
-        <td class="px-3 py-2 text-sm" style="color:${grayText}">${this.formatDate(incident.end_date)}</td>
-        <td class="px-3 py-2 text-right text-sm whitespace-nowrap">
-          <button class="edit-btn p-1 hover:bg-gray-200 rounded mr-1" data-id="${incident.id}" title="Edit">
-            ✏️
-          </button>
-          <button class="delete-btn p-1 hover:bg-red-100 rounded" data-id="${incident.id}" title="Delete">
-            🗑️
-          </button>
+        <td class="px-3 py-2 text-sm" style="color:${grayText}">
+          <div class="font-bold mb-1">${this.escapeHTML(incident.title || 'N/A')}</div>
+          ${(incident.location && incident.location !== incident.title) ?
+        `<div class="text-xs text-gray-600 mb-1">📍 ${this.escapeHTML(incident.location)}</div>` : ''}
+          <div class="text-xs opacity-75 line-clamp-2">${this.escapeHTML(incident.description || '')}</div>
+        </td>
+        <td class="px-3 py-2 text-sm" style="color:${grayText}">
+          <div class="font-medium">${this.escapeHTML(this.formatTypeLabel(incident.type))}</div>
+          <div class="text-xs opacity-75 mt-1">Source: ${this.escapeHTML(incident.source || 'Metrolinx')}</div>
+          <div class="text-xs opacity-75">Impact: ${this.escapeHTML(incident.impact || 'N/A')}</div>
+        </td>
+        <td class="px-3 py-2 text-sm" style="color:${grayText}">
+          <span class="inline-block px-2 py-0.5 rounded text-xs bg-gray-200">
+            ${this.escapeHTML(incident.district || 'N/A')}
+          </span>
+        </td>
+        <td class="px-3 py-2 text-sm" style="color:${grayText}">
+          <div class="whitespace-nowrap">Start: ${this.formatDate(incident.start_date)}</div>
+          <div class="whitespace-nowrap opacity-75">End: ${this.formatDate(incident.end_date)}</div>
+        </td>
+        <td class="px-1 py-2 text-center text-sm whitespace-nowrap align-middle">
+          <div class="flex flex-col gap-1 items-center justify-center">
+            <button class="edit-btn p-1.5 hover:bg-blue-100 text-blue-600 rounded transition-colors" data-id="${incident.id}" title="Edit">
+              ✏️
+            </button>
+            <button class="delete-btn p-1.5 hover:bg-red-100 text-red-600 rounded transition-colors" data-id="${incident.id}" title="Delete">
+              🗑️
+            </button>
+          </div>
         </td>
       </tr>
     `;
@@ -113,18 +129,23 @@ export class AdminUploadView {
       <tr class="bg-yellow-50 border-t border-b border-yellow-200">
         <td colspan="6" class="p-4">
           <form class="edit-form grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" data-id="${incident.id}">
-            <div class="col-span-1 sm:col-span-2 lg:col-span-1">
+            <div class="col-span-1 sm:col-span-2 lg:col-span-3">
               <label class="block text-xs font-bold mb-1" style="color:${grayText}">Title</label>
               <input type="text" name="title" value="${this.escapeHTML(incident.title || '')}" class="w-full text-sm border rounded p-1" required />
             </div>
             
-            <div>
+            <div class="col-span-1 sm:col-span-2 lg:col-span-3">
+              <label class="block text-xs font-bold mb-1" style="color:${grayText}">Description</label>
+              <textarea name="description" rows="3" class="w-full text-sm border rounded p-1">${this.escapeHTML(incident.description || '')}</textarea>
+            </div>
+
+            <div class="col-span-1 sm:col-span-2">
               <label class="block text-xs font-bold mb-1" style="color:${grayText}">Location</label>
               <input type="text" name="location" value="${this.escapeHTML(incident.location || '')}" class="w-full text-sm border rounded p-1" />
             </div>
 
             <div>
-              <label class="block text-xs font-bold mb-1" style="color:${grayText}">District</label>
+              <label class="block text-xs font-bold mb-1" style="color:${grayText}">Region</label>
               <select name="district" class="w-full text-sm border rounded p-1">
                 <option value="">Select Region...</option>
                 <option value="Leaside-Thorncliffe" ${incident.district === 'Leaside-Thorncliffe' ? 'selected' : ''}>Leaside-Thorncliffe</option>
@@ -141,6 +162,25 @@ export class AdminUploadView {
               <select name="type" class="w-full text-sm border rounded p-1">
                 ${CONFIG.INCIDENT_TYPES.map(t => `
                   <option value="${t.value}" ${incident.type === t.value ? 'selected' : ''}>${t.label}</option>
+                `).join('')}
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold mb-1" style="color:${grayText}">Impact</label>
+              <select name="impact" class="w-full text-sm border rounded p-1">
+                <option value="low" ${incident.impact === 'low' ? 'selected' : ''}>Low</option>
+                <option value="medium" ${incident.impact === 'medium' ? 'selected' : ''}>Medium</option>
+                <option value="high" ${incident.impact === 'high' ? 'selected' : ''}>High</option>
+                <option value="critical" ${incident.impact === 'critical' ? 'selected' : ''}>Critical</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold mb-1" style="color:${grayText}">Source</label>
+              <select name="source" class="w-full text-sm border rounded p-1">
+                ${CONFIG.SOURCE_TYPES.map(s => `
+                  <option value="${s.value}" ${incident.source === s.value ? 'selected' : ''}>${s.label}</option>
                 `).join('')}
               </select>
             </div>
@@ -167,6 +207,100 @@ export class AdminUploadView {
         </td>
       </tr>
     `;
+  }
+
+  bindDynamicEvents() {
+    const tableBody = $('#incidents-table-body');
+    if (!tableBody) return;
+
+    // Edit button
+    tableBody.querySelectorAll('.edit-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const id = parseInt(e.currentTarget.dataset.id);
+        this.toggleEditMode(id);
+      });
+    });
+
+    // Delete button
+    tableBody.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const id = parseInt(e.currentTarget.dataset.id);
+        this.deleteIncident(id);
+      });
+    });
+
+    // Cancel button
+    tableBody.querySelectorAll('.cancel-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.toggleEditMode(null);
+      });
+    });
+
+    // Save form
+    tableBody.querySelectorAll('.edit-form').forEach(form => {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const id = parseInt(e.currentTarget.dataset.id);
+        const formData = new FormData(e.currentTarget);
+        const data = Object.fromEntries(formData.entries());
+        this.saveIncident(id, data);
+      });
+    });
+  }
+
+  toggleEditMode(id) {
+    this.editingIncidentId = id;
+    const tableBody = $('#incidents-table-body');
+    if (tableBody) {
+      tableBody.innerHTML = this.renderTableBody();
+      this.bindDynamicEvents();
+    }
+  }
+
+  async saveIncident(id, data) {
+    // Frontend-only update
+    const index = this.currentUpload.preview.findIndex(i => i.id === id);
+    if (index !== -1) {
+      this.currentUpload.preview[index] = { ...this.currentUpload.preview[index], ...data };
+      this.showMessage('Incident updated locally (click Publish to save)', 'success');
+      this.toggleEditMode(null);
+    }
+  }
+
+  async deleteIncident(id) {
+    if (!confirm('Delete this incident? (Will be removed on Publish)')) return;
+
+    // Frontend-only delete
+    this.currentUpload.preview = this.currentUpload.preview.filter(i => i.id !== id);
+    this.showMessage('Incident removed locally', 'success');
+    this.toggleEditMode(this.editingIncidentId); // Re-render
+  }
+
+  async publishIncidents() {
+    if (!this.currentUpload) return;
+
+    this.confirmModal.confirm(
+      `Publish ${this.currentUpload.preview.length} incident(s)? This will make them visible to the public.`,
+      async () => {
+        try {
+          this.showMessage('Publishing incidents...', 'info');
+
+          // Send the FULL modified list to the backend
+          const response = await api.publishUpload(this.currentUpload.upload_id, this.currentUpload.preview);
+
+          if (response.success) {
+            this.showMessage(`Successfully published ${response.data.updated || 0} incidents`, 'success');
+
+            // Reset upload state
+            this.currentUpload = null;
+            $('#preview-section')?.classList.add('hidden');
+            $('#file-upload').value = '';
+          }
+        } catch (error) {
+          this.showMessage(`Publish error: ${error.message}`, 'error');
+        }
+      }
+    );
   }
 
   formatDate(dateString) {

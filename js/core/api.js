@@ -132,9 +132,10 @@ class APIClient {
     });
   }
 
-  async publishUpload(uploadId) {
+  async publishUpload(uploadId, incidents = null) {
     return this.request(CONFIG.API_ENDPOINTS.ADMIN_UPLOAD_PUBLISH(uploadId), {
       method: 'PUT',
+      body: incidents ? JSON.stringify({ incidents }) : null,
     });
   }
 
