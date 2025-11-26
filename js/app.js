@@ -3,6 +3,18 @@
  * Initializes router, registers views, and starts the application
  */
 
+import 'leaflet/dist/leaflet.css';
+import '../css/styles.css';
+import L from 'leaflet';
+
+// Fix Leaflet icon issues in Webpack/Vite
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: new URL('leaflet/dist/images/marker-icon-2x.png', import.meta.url).href,
+  iconUrl: new URL('leaflet/dist/images/marker-icon.png', import.meta.url).href,
+  shadowUrl: new URL('leaflet/dist/images/marker-shadow.png', import.meta.url).href,
+});
+
 import router from './core/router.js';
 import state from './core/state.js';
 import api from './core/api.js';

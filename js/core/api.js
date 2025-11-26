@@ -16,7 +16,10 @@ class APIClient {
    * Generic request handler with error handling and offline detection
    */
   async request(endpoint, options = {}) {
-    const url = `${this.baseURL}${endpoint}`;
+    // Add timestamp to prevent caching for GET requests
+    const separator = endpoint.includes('?') ? '&' : '?';
+    const url = `${this.baseURL}${endpoint}${separator}_t=${Date.now()}`;
+
     const defaultOptions = {
       headers: {
         'Content-Type': 'application/json',
@@ -78,7 +81,11 @@ class APIClient {
     const params = new URLSearchParams();
     Object.entries(filters).forEach(([key, value]) => {
       if (value !== null && value !== undefined && value !== '') {
-        params.append(key, value);
+        if (Array.isArray(value)) {
+          value.forEach(item => params.append(`${key}[]`, item));
+        } else {
+          params.append(key, value);
+        }
       }
     });
     const query = params.toString() ? `?${params.toString()}` : '';
@@ -128,15 +135,23 @@ class APIClient {
     });
   }
 
-  async publishUpload(uploadId) {
+  async publishUpload(uploadId, incidents = null) {
     return this.request(CONFIG.API_ENDPOINTS.ADMIN_UPLOAD_PUBLISH(uploadId), {
       method: 'PUT',
+      body: incidents ? JSON.stringify({ incidents }) : null,
     });
   }
 
   async deleteUpload(uploadId) {
     return this.request(CONFIG.API_ENDPOINTS.ADMIN_UPLOAD_DELETE(uploadId), {
       method: 'DELETE',
+    });
+  }
+
+  async updateIncident(incidentId, data) {
+    return this.request(CONFIG.API_ENDPOINTS.ADMIN_INCIDENT_UPDATE(incidentId), {
+      method: 'PATCH',
+      body: JSON.stringify(data),
     });
   }
 

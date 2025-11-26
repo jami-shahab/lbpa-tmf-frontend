@@ -4,7 +4,10 @@
  */
 
 export const CONFIG = {
-  API_BASE_URL: 'https://hotpink-dugong-322722.hostingersite.com/tmf-api',
+  // Automatically switch between Local and Production based on Vite environment
+  API_BASE_URL: import.meta.env.DEV
+    ? 'http://localhost:8000'
+    : 'https://hotpink-dugong-322722.hostingersite.com/tmf-api',
 
   ADMIN_AUTH_TOKEN: '649dcf4cbc9bd36ad7a5b3f2f7182af6f406812191ee659aee00107defe05f0e',
 
@@ -39,8 +42,9 @@ export const CONFIG = {
 
     // Admin
     ADMIN_UPLOADS: '/admin/uploads',
-    ADMIN_UPLOAD_PUBLISH: (id) => `/admin/uploads/${id}/publish`,
-    ADMIN_UPLOAD_DELETE: (id) => `/admin/uploads/${id}`,
+    ADMIN_UPLOAD_PUBLISH: (id) => `/admin/uploads?upload_id=${id}`,
+    ADMIN_UPLOAD_DELETE: (id) => `/admin/uploads?upload_id=${id}`,
+    ADMIN_INCIDENT_UPDATE: (id) => `/admin/incidents/${id}`,
     ADMIN_INCIDENT_DELETE: (id) => `/admin/incidents/${id}`,
     ADMIN_INCIDENTS_BULK: '/admin/incidents/bulk',
     ADMIN_LOGS: '/admin/logs',
