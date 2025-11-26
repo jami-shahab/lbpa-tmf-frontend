@@ -3,6 +3,7 @@ import tailwindcss from 'tailwindcss';
 import autoprefixer from 'autoprefixer';
 
 export default defineConfig({
+    base: './', // Ensure relative paths for assets (fixes GitHub Pages 404s)
     css: {
         postcss: {
             plugins: [
