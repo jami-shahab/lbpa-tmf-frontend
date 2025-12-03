@@ -785,7 +785,7 @@ export class PublicView {
             </p>
           </div>
           <p class="text-sm text-center" style="color:${grayText};opacity:.7">
-            Data sources: City of Toronto, Ontario 511, TTC, Metrolinx. Updated every 6 hours.
+            Data sources: City of Toronto, Ontario 511, TTC, Metrolinx. Updated every hour.
           </p>
         </div>
       </footer>
