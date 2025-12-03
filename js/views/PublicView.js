@@ -656,27 +656,23 @@ export class PublicView {
 
     return `
       <div class="map-legend bg-white rounded-lg card-shadow p-3 max-w-[200px]">
-        <div class="text-sm mb-2 font-semibold" style="color:${grayText}">Legend</div>
+        <div class="text-sm mb-2 font-semibold" style="color:${grayText}">Severity Legend</div>
         <div class="space-y-1 text-xs" style="color:${grayText}">
           <div class="flex items-center gap-2">
             <div class="w-3 h-3 rounded-full" style="background-color:${CONFIG.COLORS.red}"></div>
-            <span>Road Closure / Accident</span>
+            <span>High / Critical</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="w-3 h-3 rounded-full" style="background-color:rgb(255,140,0)"></div>
+            <span>Medium</span>
           </div>
           <div class="flex items-center gap-2">
             <div class="w-3 h-3 rounded-full" style="background-color:${CONFIG.COLORS.yellow}"></div>
-            <span>Construction</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <div class="w-3 h-3 rounded-full" style="background-color:${CONFIG.COLORS.blue}"></div>
-            <span>Transit / Weather</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <div class="w-3 h-3 rounded-full" style="background-color:${CONFIG.COLORS.green}"></div>
-            <span>Special Event</span>
+            <span>Low</span>
           </div>
           <div class="flex items-center gap-2">
             <div class="w-3 h-3 rounded-full" style="background-color:${CONFIG.COLORS.grayText}"></div>
-            <span>Other</span>
+            <span>Unknown</span>
           </div>
         </div>
       </div>
