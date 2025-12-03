@@ -1228,7 +1228,7 @@ export class PublicView {
         lon = incident.coordinates.lon;
       }
 
-      const color = this.getMarkerColor(incident.type);
+      const color = this.getMarkerColor(incident.impact);
 
       // Create custom icon
       const icon = L.divIcon({
@@ -1275,17 +1275,17 @@ export class PublicView {
     `;
   }
 
-  getMarkerColor(type) {
+  getMarkerColor(impact) {
+    // Map severity/impact levels to colors
+    // Grey for unknown, Yellow for low, Orange for medium, Red for high
     const colors = {
-      road_closure: CONFIG.COLORS.red,
-      construction: CONFIG.COLORS.yellow,
-      accident: CONFIG.COLORS.red,
-      transit_delay: CONFIG.COLORS.blue,
-      special_event: CONFIG.COLORS.green,
-      weather: CONFIG.COLORS.blue,
-      other: CONFIG.COLORS.grayText,
+      low: CONFIG.COLORS.yellow,        // Yellow for low severity
+      medium: 'rgb(255,140,0)',         // Orange for medium severity
+      high: CONFIG.COLORS.red,          // Red for high severity
+      critical: CONFIG.COLORS.red,      // Red for critical (same as high)
     };
-    return colors[type] || CONFIG.COLORS.blue;
+    // Return grey for unknown/null/undefined severity
+    return colors[impact?.toLowerCase()] || CONFIG.COLORS.grayText;
   }
 
   showDetail(id) {
