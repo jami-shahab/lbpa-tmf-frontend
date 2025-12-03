@@ -971,13 +971,7 @@ export class PublicView {
           msg.classList.add('hidden');
           msg.className = 'mt-4 text-sm font-medium hidden'; // reset classes
 
-          const response = await fetch('./api/public/subscribe.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-          });
-
-          const result = await response.json();
+          const result = await api.subscribe(data);
 
           msg.classList.remove('hidden');
           if (result.success) {

@@ -4,9 +4,12 @@
  */
 
 export const CONFIG = {
-  // Automatically switch between Local and Production based on Vite environment
-  // Force production URL for now to debug
-  API_BASE_URL: 'http://localhost:8000',
+  // Automatically switch between Local and Production based on environment
+  // Local development: http://localhost:8000
+  // Production: https://leasidebusinesspark.com/tmf-api
+  API_BASE_URL: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:8000'
+    : 'https://leasidebusinesspark.com/tmf-api',
 
   ADMIN_AUTH_TOKEN: '444c781f3c96a68aa0d31c98dc3618b5f4e8103a5ce90286d56eb5397236d1f2',
 
@@ -35,7 +38,7 @@ export const CONFIG = {
     INCIDENTS: '/incidents',
     INCIDENT_BY_ID: (id) => `/incidents/${id}`,
     REGIONS: '/regions',
-    SUBSCRIBE: '/api/public/subscribe.php',
+    SUBSCRIBE: '/subscribe',
     VERIFY_SUBSCRIPTION: (token) => `/subscribe/verify/${token}`,
     UNSUBSCRIBE: (token) => `/unsubscribe/${token}`,
 
