@@ -6,9 +6,9 @@
 export const CONFIG = {
   // Automatically switch between Local and Production based on Vite environment
   // Force production URL for now to debug
-  API_BASE_URL: 'https://leasidebusinesspark.com/tmf-api',
+  API_BASE_URL: 'http://localhost:8000',
 
-  ADMIN_AUTH_TOKEN: '649dcf4cbc9bd36ad7a5b3f2f7182af6f406812191ee659aee00107defe05f0e',
+  ADMIN_AUTH_TOKEN: '444c781f3c96a68aa0d31c98dc3618b5f4e8103a5ce90286d56eb5397236d1f2',
 
   COLORS: {
     grayText: 'rgb(89,89,89)',
